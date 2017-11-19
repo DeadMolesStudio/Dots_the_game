@@ -14,17 +14,17 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         widget.cpp \
-    field.cpp \
-    level.cpp \
     cell.cpp \
-    chip_graph.cpp \
-    chip.cpp
+    chip.cpp \
+    field.cpp \
+    level.cpp
+
 
 HEADERS  += widget.h \
-    field.h \
-    level.h \
     cell.h \
-    chip_graph.h \
-    chip.h
+    chip.h \
+    field.h \
+    level.h
+
 
 FORMS    += widget.ui

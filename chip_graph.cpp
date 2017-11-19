@@ -13,7 +13,8 @@ Chip_graph::~Chip_graph()
 
 QRectF Chip_graph::boundingRect() const
 {
-    return QRectF(-25,-25,50,50);   // Ограничиваем область, в которой лежит f
+    return QRectF(-25,-25,50,50);   // Ограничиваем область, в которой лежит фишка
+
 }
 
 void Chip_graph::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -26,7 +27,11 @@ void Chip_graph::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
         Q_UNUSED(widget);
 }
 
-void Chip_graph::click()
+void Chip_graph::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    this->setPos(-250,-250);
+    emit signal1();
+    this->moveBy(10, 10);
+    // Вызываем родительскую функцию события нажатия кнопки мыши
+    QGraphicsItem::mousePressEvent(event);
 }
+

@@ -1,10 +1,10 @@
 #include "chip.h"
-#include <cstdlib>
+//#include <cstdlib>
 
 Chip::Chip()
 {
-    shape = std::rand() % 1;
-    color = std::rand() % 5; //случайный цвет из 5и возможных
+    shape = 1;//std::rand() % 1;
+    color = 3;//std::rand() % 5; //случайный цвет из 5и возможных
     points = shape * 5;
 }
 

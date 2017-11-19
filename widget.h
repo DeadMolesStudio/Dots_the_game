@@ -3,13 +3,12 @@
 
 #include <QWidget>
 #include <QGraphicsScene>
+#include <QMessageBox>
+#include <QGridLayout>
 
 //#include "level.h"
-#include "chip_graph.h"
 
-namespace Ui {
-class Widget;
-}
+#include "cell.h"
 
 class Widget : public QWidget
 {
@@ -20,10 +19,13 @@ public:
     ~Widget();
 
 private:
-    Ui::Widget      *ui;
+    void createGridForChips();
     QGraphicsScene  *scene;     // Объявляем графическую сцену
-    //Level *level;
-    Chip_graph **chip;
+    QGridLayout * grid;
+    Cell ***cells;
+
+private slots:
+    void slotFromChip();
 };
 
 #endif // WIDGET_H

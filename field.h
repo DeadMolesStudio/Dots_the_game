@@ -18,10 +18,10 @@ public:
   void start_combination(Cell *first);
   ~Field();
 private:
-  Cell **cell_matrix;
+  Cell ***cell_matrix;
   size_t rows;
   size_t cols;
-  QStack<Cell> combination;//TODO:откуда будем брать стэк?
+  QStack<Cell*> combination;//TODO:откуда будем брать стэк?
 };
 
 #endif // FIELD_H

@@ -7,7 +7,7 @@ class Level
 {
 public:
   Level();
-  Level(QString filename);
+  Level(int max_moves, size_t rows, size_t cols);
   //void check_reqs(Cell* cell);
   //TODO:pause  ?
   //TODO:start  ?
