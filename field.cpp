@@ -1,17 +1,13 @@
 #include "field.h"
+#include "ui_field.h"
 
-Field::Field(size_t rows, size_t cols) :
+const int CHIP_RADIUS = 25;
+const int SPACE = 5;
+
+Field::Field(QWidget *,size_t rows, size_t cols) :
     rows(rows), cols(cols)
 {
-    cell_matrix = new Cell**[rows];
-    for(size_t i = 0; i < rows; i++)
-    {
-        cell_matrix[i] = new Cell*[cols];
-        for (size_t j = 0; j < cols; j++)
-        {
-            cell_matrix[i][j] = new Cell();
-        }
-    }
+    createWindow();
 }
 
 Cell* Field::get_cell(size_t row, size_t col)
@@ -74,6 +70,7 @@ bool Field::check_cell(size_t row, size_t col)
     return 0;
 }
 
+/*
 //void Field::update_field()
 //{
 //    for (size_t temp_col = 0; temp_col < cols; temp_col++)
@@ -119,6 +116,7 @@ bool Field::check_cell(size_t row, size_t col)
 //    }
 //    return nullptr;
 //}
+*/
 
 void Field::start_combination(Cell *first)
 {
@@ -127,10 +125,97 @@ void Field::start_combination(Cell *first)
 
 Field::~Field()
 {
-    for (int i = 0; i < rows; i++)
+    for (size_t i = 0; i < rows; i++)
     {
         delete [] cell_matrix[i];
     }
     delete [] cell_matrix;
     combination.clear();
+    delete grid;
+}
+
+void Field::slotFromChip()
+{
+    switch(combination.empty())
+    {
+    case 0://если это не первая фишка
+        if (qobject_cast<Cell*>(sender())->get_chip()->color == combination.top()->get_chip()->color && true)
+            //если цвет совпадает
+            //TODO:чекать тут на то, что это должна быть соседняя ячейка
+        {
+            if (qobject_cast<Cell*>(sender()) != combination.top())
+            {
+                QMessageBox::information(this, QString("Combination"),
+                                         QString("Added to stack:\n"
+                                                 "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
+                                                 )
+                                         );
+                combination.append( qobject_cast<Cell*>(sender()) );
+            }
+            else
+            {
+                QMessageBox::critical(this, QString("Combination"),
+                                         QString("Combination complete!:\n"
+                                                 "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
+                                                 )
+                                         );
+                //TODO:удаляем фишки и заполняем рандомно пустые места
+            }
+        }
+        else //если не совпадает
+        {
+            QMessageBox::warning(this, QString("Combination"),
+                                     QString("Фишка не подходит по цвету!:\n"
+                                             "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
+                                             )
+                                     );
+            qobject_cast<Cell*>(sender())->paintEvent(0);
+        }
+        break;
+
+    case 1://если первая
+        QMessageBox::information(this, QString("Combination"),
+                                 QString("Added first to stack:\n"
+                                         "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
+                                         )
+                                 );
+        combination.append( qobject_cast<Cell*>(sender()) );
+        break;
+    }
+}
+
+void Field::createWindow()
+{
+    this->setFixedSize(cols * (CHIP_RADIUS + SPACE) + 30, rows * (CHIP_RADIUS + SPACE) + 30);    // Фиксируем размеры виджета(окна)
+    QPalette Pal(palette());
+    // устанавливаем цвет фона
+    Pal.setColor(QPalette::Background, QColor(197, 208, 230, 255));
+    this->setAutoFillBackground(true);
+    this->setPalette(Pal);
+
+    grid = new QGridLayout();
+    grid->setSpacing(SPACE);
+    grid->setContentsMargins(15, 15, 15, 15);
+    //grid->setContentsMargins(SPACE, SPACE, SPACE, SPACE);
+//    grid->setDefaultPositioning;
+
+    //QSignalMapper *signalMapper = new QSignalMapper(this);
+
+
+
+
+    cell_matrix = new Cell**[rows];
+    for(size_t i = 0; i < rows; i++)
+    {
+        cell_matrix[i] = new Cell*[cols];
+        for (size_t j = 0; j < cols; j++)
+        {
+            cell_matrix[i][j] = new Cell();
+            //signalMapper->setMapping(cell_matrix[i][j], QString(QString::number(i) + "_" + QString::number(j)));
+            connect(cell_matrix[i][j], &Cell::signal1,this, &Field::slotFromChip);
+            grid->addWidget(cell_matrix[i][j], i,j);
+        }
+    }
+
+    this->setLayout(grid);
 }

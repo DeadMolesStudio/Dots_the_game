@@ -1,11 +1,10 @@
 #include "widget.h"
 #include "ui_widget.h"
-#include <QPushButton>
 
 Widget::Widget(QWidget*)
 {
     this->resize(600,600);          // Задаем размеры виджета, то есть окна
-    //this->setFixedSize(600,600);    // Фиксируем размеры виджета
+    this->setFixedSize(600,600);    // Фиксируем размеры виджета
 
     //scene = new QGraphicsScene();   // Инициализируем графическую сцену
     //level = new Level();
@@ -55,9 +54,10 @@ void Widget::slotFromChip()
 void Widget::createGridForChips()
 {
     grid = new QGridLayout();
-//    grid->setHorizontalSpacing(1);
-//    grid->setVerticalSpacing(1);
-//    grid->setContentsMargins(2, 2, 2, 2);
+    grid->setHorizontalSpacing(1);
+    grid->setVerticalSpacing(1);
+    grid->setContentsMargins(2, 2, 2, 2);
+
 
 //    QPushButton ***chip = new QPushButton**[5];      // Инициализируем фишки
 //    for (int i = 0; i < 5; i++)

@@ -3,11 +3,16 @@
 
 #include "cell.h"
 #include <QStack>
+#include <QWidget>
+#include <QMessageBox>
+#include <QGridLayout>
+//#include <QSignalMapper>
 
-class Field
+class Field : public QWidget
 {
+    Q_OBJECT
 public:
-  Field(size_t rows = 0, size_t cols = 0);
+  explicit Field(QWidget *parent = 0, size_t rows = 0, size_t cols = 0);
   Cell* get_cell(size_t row, size_t col);
   bool check_cell(size_t row, size_t col);//проверяет наличие комбинаций с соседями
   void update_field();
@@ -17,11 +22,22 @@ public:
   Cell* get_not_empty_cell(size_t temp_col, size_t& temp_row);
   void start_combination(Cell *first);
   ~Field();
+
 private:
+  //логика
   Cell ***cell_matrix;
   size_t rows;
   size_t cols;
   QStack<Cell*> combination;//TODO:откуда будем брать стэк?
+
+  //графика
+  void createWindow();
+  QGridLayout * grid;
+  Cell ***cells;
+
+private slots:
+    void slotFromChip();
 };
+
 
 #endif // FIELD_H

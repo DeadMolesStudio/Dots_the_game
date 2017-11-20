@@ -2,7 +2,7 @@
 #define WIDGET_H
 
 #include <QWidget>
-#include <QGraphicsScene>
+//#include <QGraphicsScene>
 #include <QMessageBox>
 #include <QGridLayout>
 
@@ -20,7 +20,7 @@ public:
 
 private:
     void createGridForChips();
-    QGraphicsScene  *scene;     // Объявляем графическую сцену
+    //QGraphicsScene  *scene;     // Объявляем графическую сцену
     QGridLayout * grid;
     Cell ***cells;
 

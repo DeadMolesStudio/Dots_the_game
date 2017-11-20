@@ -4,6 +4,9 @@
 #include <chip.h>
 #include <QWidget>
 #include <QPainter>
+#include <QPalette>
+#include <QMessageBox>
+#include <QColor>
 
 class Cell : public QWidget
 {
@@ -25,7 +28,7 @@ private:
   Chip *pointer_chip;
 
   //QRectF boundingRect() const;
-
+  bool in_combination;
 
 signals:
     void signal1();

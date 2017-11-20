@@ -13,18 +13,19 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        widget.cpp \
     cell.cpp \
     chip.cpp \
-    field.cpp \
-    level.cpp
+    field.cpp
 
 
-HEADERS  += widget.h \
-    cell.h \
+
+
+HEADERS  += cell.h \
     chip.h \
-    field.h \
-    level.h
+    field.h
 
 
-FORMS    += widget.ui
+
+
+FORMS    += field.ui
+
