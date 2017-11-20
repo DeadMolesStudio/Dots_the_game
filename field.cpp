@@ -3,18 +3,18 @@
 Field::Field(size_t rows, size_t cols) :
     rows(rows), cols(cols)
 {
-    cell_matrix = new Cell*[rows];
+    cell_matrix = new Cell**[rows];
     for(size_t i = 0; i < rows; i++)
     {
-        cell_matrix[i] = new Cell[cols];
+        cell_matrix[i] = new Cell*[cols];
         for (size_t j = 0; j < cols; j++)
         {
-            cell_matrix[i][j] = Cell();
+            cell_matrix[i][j] = new Cell();
         }
     }
 }
 
-Cell& Field::get_cell(size_t row, size_t col)
+Cell* Field::get_cell(size_t row, size_t col)
 {
     return cell_matrix[row][col];
 }
@@ -25,9 +25,9 @@ void Field::random_field()
         {
         for(size_t j = 0; j < cols; j++)
             {
-            if (!cell_matrix[i][j].is_blocked())
+            if (!cell_matrix[i][j]->is_blocked())
             {
-                cell_matrix[i][j].random_chip();
+                cell_matrix[i][j]->random_chip();
             }
         }
     }
@@ -50,26 +50,26 @@ void Field::check_field()//проверяет наличие комбинаци�
 
 bool Field::check_cell(size_t row, size_t col)
 {
-    if (cell_matrix[row][col].is_blocked()) return 0;
+    if (cell_matrix[row][col]->is_blocked()) return 0;
     //up
     if(row > 1)
     {
-        if (cell_matrix[row-1][col].get_chip()->color == cell_matrix[row][col].get_chip()->color) return 1;
+        if (cell_matrix[row-1][col]->get_chip()->color == cell_matrix[row][col]->get_chip()->color) return 1;
     }
     //down
     if(row < rows - 1)
     {
-        if (cell_matrix[row+1][col].get_chip()->color == cell_matrix[row][col].get_chip()->color) return 1;
+        if (cell_matrix[row+1][col]->get_chip()->color == cell_matrix[row][col]->get_chip()->color) return 1;
     }
     //left
     if(col > 1)
     {
-        if (cell_matrix[row][col-1].get_chip()->color == cell_matrix[row][col].get_chip()->color) return 1;
+        if (cell_matrix[row][col-1]->get_chip()->color == cell_matrix[row][col]->get_chip()->color) return 1;
     }
     //right
     if(col < cols - 1)
     {
-        if (cell_matrix[row][col+1].get_chip()->color == cell_matrix[row][col].get_chip()->color) return 1;
+        if (cell_matrix[row][col+1]->get_chip()->color == cell_matrix[row][col]->get_chip()->color) return 1;
     }
     return 0;
 }
@@ -127,6 +127,10 @@ void Field::start_combination(Cell *first)
 
 Field::~Field()
 {
+    for (int i = 0; i < rows; i++)
+    {
+        delete [] cell_matrix[i];
+    }
     delete [] cell_matrix;
     combination.clear();
 }

@@ -8,7 +8,7 @@ class Field
 {
 public:
   Field(size_t rows = 0, size_t cols = 0);
-  Cell& get_cell(size_t row, size_t col);
+  Cell* get_cell(size_t row, size_t col);
   bool check_cell(size_t row, size_t col);//проверяет наличие комбинаций с соседями
   void update_field();
   void random_field();
