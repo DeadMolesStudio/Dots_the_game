@@ -15,11 +15,6 @@ Cell::Cell(QWidget *parent) :
 //    this->setPalette(Pal);
 }
 
-//Cell::Cell(Chip *chip, bool blocked) :
-//    blocked(blocked), pointer_chip(chip)
-//{
-
-//}
 
 Chip* Cell::get_chip()
 {
@@ -37,12 +32,6 @@ bool Cell::is_blocked()
     return blocked;
 }
 
-//QRectF Cell::boundingRect() const
-//{
-//    return QRectF(0,0,30,30);   // Ограничиваем область, в которой лежит фишка
-
-//}
-
 void Cell::paintEvent(QPaintEvent *event)
 {
 
@@ -56,17 +45,9 @@ void Cell::paintEvent(QPaintEvent *event)
 
         switch (in_combination) {
         case 0:
-            //QMessageBox::information(this, "", "paintEvent/switch/case0");
             activate_graphics(&painter);
-//            painter.setPen(QPen(Qt::white, 3, Qt::SolidLine, Qt::FlatCap));
-//            painter.drawEllipse(1, 1, CHIP_RADIUS,CHIP_RADIUS);
-//            in_combination = 1;
             break;
         case 1:
-            //QMessageBox::information(this, "", "paintEvent/switch/case1");
-//            painter.setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::FlatCap));
-//            painter.drawEllipse(1, 1, CHIP_RADIUS,CHIP_RADIUS);
-//            in_combination = 0;
             deactivate_graphics(&painter);
             break;
         }
@@ -130,7 +111,6 @@ void Cell::mousePressEvent(QMouseEvent *event)
 
     QWidget::mousePressEvent(event);
     update();
-    //paintEvent(0);
     emit signal1();
 }
 
@@ -153,7 +133,6 @@ void Cell::deactivate()
 
 void Cell::activate_graphics(QPainter *painter)
 {
-//    QMessageBox::critical(this, "", "activate работает!!!");
     painter->setPen(QPen(Qt::white, 3, Qt::SolidLine, Qt::FlatCap));
     painter->drawEllipse(1, 1, CHIP_RADIUS,CHIP_RADIUS);
     in_combination = 1;

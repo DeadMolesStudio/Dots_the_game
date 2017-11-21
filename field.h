@@ -3,10 +3,10 @@
 
 #include "cell.h"
 #include <QStack>
+#include <QVector>
 #include <QWidget>
 #include <QMessageBox>
 #include <QGridLayout>
-//#include <QSignalMapper>
 
 class Field : public QWidget
 {

@@ -138,59 +138,78 @@ void Field::slotFromChip()
 {
     switch(!combination.isEmpty())
     {
-    case 0://если первая
+    //если первая фишка в комбинации
+    case 0:
+
+    {
         QMessageBox::information(this, QString("Combination"),
                                  QString("First added to stack:\n"
                                          "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
                                          )
                                  );
+
+    }
         combination.append( qobject_cast<Cell*>(sender()) );
         break;
 
-    case 1://если это не первая фишка
+    //если это не первая фишка
+    case 1:
+
         if (qobject_cast<Cell*>(sender())->get_chip()->color == combination.top()->get_chip()->color && true)
             //если цвет совпадает
             //TODO:чекать тут на то, что это должна быть соседняя ячейка
         {
             if (qobject_cast<Cell*>(sender()) != combination.top())
             {
+
+                {
                 QMessageBox::information(this, QString("Combination"),
                                          QString("Added to stack:\n"
                                                  "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color) +
                                                  "\nitems in stack:" + QString::number(combination.count() + 1)
                                                  )
                                          );
+                }
                 combination.append( qobject_cast<Cell*>(sender()) );
             }
             else
             {
                 if (combination.count() == 1)
                 {
+
+                    {
                     QMessageBox::critical(this, QString("Combination"),
                                              QString("Combination cancelled because just one item!:\n"
                                                      "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
                                                      )
                                              );
+                    }
                     combination.clear();
                 }
                 else
                 {
+
+                    {
                     QMessageBox::critical(this, QString("Combination"),
                                              QString("Combination complete!:\n"
                                                      "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
                                                      )
                                              );
+                    }
                     complete_combination();
                 }
             }
         }
         else //цвет не совпадает
         {
+
+            {
             QMessageBox::warning(this, QString("Combination"),
                                      QString("Фишка не подходит по цвету!:\n"
                                              "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
                                              )
                                      );
+            }
             qobject_cast<Cell*>(sender())->deactivate();
         }
         break;
