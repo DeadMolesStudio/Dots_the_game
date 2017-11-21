@@ -29,6 +29,7 @@ private:
   size_t rows;
   size_t cols;
   QStack<Cell*> combination;//TODO:откуда будем брать стэк?
+  void complete_combination();
 
   //графика
   void createWindow();

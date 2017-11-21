@@ -20,8 +20,14 @@ public:
   ~Cell();
 
   void paintEvent(QPaintEvent *event);
+  void activate();
+  void deactivate();
+
 protected:
   void mousePressEvent(QMouseEvent *event);
+  void update_chip_model(QPainter *painter);
+  void activate_graphics(QPainter *painter);
+  void deactivate_graphics(QPainter *painter);
 
 private:
   bool blocked;
@@ -29,6 +35,7 @@ private:
 
   //QRectF boundingRect() const;
   bool in_combination;
+  //QPainter cell_painter;
 
 signals:
     void signal1();

@@ -136,9 +136,18 @@ Field::~Field()
 
 void Field::slotFromChip()
 {
-    switch(combination.empty())
+    switch(!combination.isEmpty())
     {
-    case 0://если это не первая фишка
+    case 0://если первая
+        QMessageBox::information(this, QString("Combination"),
+                                 QString("First added to stack:\n"
+                                         "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
+                                         )
+                                 );
+        combination.append( qobject_cast<Cell*>(sender()) );
+        break;
+
+    case 1://если это не первая фишка
         if (qobject_cast<Cell*>(sender())->get_chip()->color == combination.top()->get_chip()->color && true)
             //если цвет совпадает
             //TODO:чекать тут на то, что это должна быть соседняя ячейка
@@ -147,39 +156,43 @@ void Field::slotFromChip()
             {
                 QMessageBox::information(this, QString("Combination"),
                                          QString("Added to stack:\n"
-                                                 "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
+                                                 "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color) +
+                                                 "\nitems in stack:" + QString::number(combination.count() + 1)
                                                  )
                                          );
                 combination.append( qobject_cast<Cell*>(sender()) );
             }
             else
             {
-                QMessageBox::critical(this, QString("Combination"),
-                                         QString("Combination complete!:\n"
-                                                 "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
-                                                 )
-                                         );
-                //TODO:удаляем фишки и заполняем рандомно пустые места
+                if (combination.count() == 1)
+                {
+                    QMessageBox::critical(this, QString("Combination"),
+                                             QString("Combination cancelled because just one item!:\n"
+                                                     "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
+                                                     )
+                                             );
+                    combination.clear();
+                }
+                else
+                {
+                    QMessageBox::critical(this, QString("Combination"),
+                                             QString("Combination complete!:\n"
+                                                     "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
+                                                     )
+                                             );
+                    complete_combination();
+                }
             }
         }
-        else //если не совпадает
+        else //цвет не совпадает
         {
             QMessageBox::warning(this, QString("Combination"),
                                      QString("Фишка не подходит по цвету!:\n"
                                              "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
                                              )
                                      );
-            qobject_cast<Cell*>(sender())->paintEvent(0);
+            qobject_cast<Cell*>(sender())->deactivate();
         }
-        break;
-
-    case 1://если первая
-        QMessageBox::information(this, QString("Combination"),
-                                 QString("Added first to stack:\n"
-                                         "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
-                                         )
-                                 );
-        combination.append( qobject_cast<Cell*>(sender()) );
         break;
     }
 }
@@ -197,9 +210,6 @@ void Field::createWindow()
     grid->setSpacing(SPACE);
     grid->setContentsMargins(15, 15, 15, 15);
     //grid->setContentsMargins(SPACE, SPACE, SPACE, SPACE);
-//    grid->setDefaultPositioning;
-
-    //QSignalMapper *signalMapper = new QSignalMapper(this);
 
 
 
@@ -211,7 +221,6 @@ void Field::createWindow()
         for (size_t j = 0; j < cols; j++)
         {
             cell_matrix[i][j] = new Cell();
-            //signalMapper->setMapping(cell_matrix[i][j], QString(QString::number(i) + "_" + QString::number(j)));
             connect(cell_matrix[i][j], &Cell::signal1,this, &Field::slotFromChip);
             grid->addWidget(cell_matrix[i][j], i,j);
         }
@@ -219,3 +228,14 @@ void Field::createWindow()
 
     this->setLayout(grid);
 }
+
+void Field::complete_combination()
+{
+    while(!combination.isEmpty())
+    {
+        QMessageBox::information(this, "", QString("random " + QString::number(combination.count()) + " chip"));
+        combination.top()->random_chip();
+        combination.pop()->deactivate();
+    }
+}
+
