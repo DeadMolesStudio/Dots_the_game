@@ -24,6 +24,8 @@ public:
   void paintEvent(QPaintEvent *event);
   void activate();
   void deactivate();
+//  void enterEvent(QEvent *event);
+//  void leaveEvent(QEvent *event);
 
 protected:
   void mousePressEvent(QMouseEvent *event);

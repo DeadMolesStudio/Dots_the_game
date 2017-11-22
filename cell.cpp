@@ -16,11 +16,6 @@ Cell::Cell(QWidget *parent) :
     pointer_chip = new Chip();
     in_combination = false;
     this->setFixedSize(CHIP_RADIUS + 2,CHIP_RADIUS + 2);
-    // устанавливаем цвет фона
-//    QPalette Pal(palette());
-//    Pal.setColor(QPalette::Background, Qt::green);
-//    this->setAutoFillBackground(true);
-//    this->setPalette(Pal);
 }
 
 
@@ -68,14 +63,6 @@ void Cell::paintEvent(QPaintEvent *event)
 
 void Cell::mousePressEvent(QMouseEvent *event)
 {
-
-
-//    QString temp("Color: " + QString::number(this->get_chip()->color) + "\nShape: " + QString::number(this->get_chip()->shape));
-//    QMessageBox msgBox;
-//    msgBox.setText("Информация о фишке:");
-//    msgBox.setInformativeText(temp);
-//    msgBox.exec();
-
     QWidget::mousePressEvent(event);
     update();
     emit signal1();
@@ -88,13 +75,13 @@ Cell::~Cell()
 
 void Cell::activate()
 {
-    in_combination = true;
+    in_combination = false;
     update();
 }
 
 void Cell::deactivate()
 {
-    in_combination = false;
+    in_combination = true;
     update();
 }
 
@@ -141,3 +128,23 @@ void Cell::update_chip_model(QPainter *painter)
         QMessageBox::critical(this, "", "ошибка в выбооре цвета");
     }
 }
+
+//void Cell::enterEvent(QEvent *event)
+//{
+//    Q_UNUSED(event);
+//    QPalette Pal(palette());
+//    // устанавливаем цвет фона
+//    Pal.setColor(QPalette::Background, QColor(QRgb(0x000000)));
+//    this->setAutoFillBackground(true);
+//    this->setPalette(Pal);
+//}
+
+//void Cell::leaveEvent(QEvent *event)
+//{
+//    Q_UNUSED(event);
+//    QPalette Pal(palette());
+//    // устанавливаем цвет фона
+//    Pal.setColor(QPalette::Background, QColor(QRgb(0xe6e6fa)));
+//    this->setAutoFillBackground(true);
+//    this->setPalette(Pal);
+//}

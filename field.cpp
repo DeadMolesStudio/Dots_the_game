@@ -86,14 +86,7 @@ void Field::slotFromChip()
     if(combination.isEmpty())
     {
     //если первая фишка в комбинации
-        {
-        QMessageBox::information(this, QString("Combination"),
-                                 QString("First added to combination:\n"
-                                         "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
-                                         )
-                                 );
-
-        }
+        qDebug("первая фишка в комбинации");
         combination.append( qobject_cast<Cell*>(sender()) );
     }
     //если это не первая фишка
@@ -109,23 +102,11 @@ void Field::slotFromChip()
                    if ( !qobject_cast<Cell*>(sender())->is_in_combination() )
                    {
                        combination.append( qobject_cast<Cell*>(sender()) );
-                       {
-                           QMessageBox::information(this, QString("Combination"),
-                                                    QString("Added to combination:\n"
-                                                            "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color) +
-                                                            "\nchips in combination:" + QString::number(combination.count())
-                                                            )
-                                                         );
-                            }
+                       qDebug("фишка добавлена в комбинацию");
                    }
                    else
                    {
-                       {
-                           QMessageBox::information(this, QString("Combination"),
-                                                     QString("Chip is already in combination:\n"
-                                                             "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color))
-                                                     );
-                       }
+                       qDebug("фишка уже в кобинации - отмена");
                        qobject_cast<Cell*>(sender())->activate();
                    }
                 }
@@ -133,39 +114,19 @@ void Field::slotFromChip()
                 {
                     if (combination.count() == 1)
                     {
-                        {
-                            QMessageBox::critical(this, QString("Combination"),
-                                                  QString("Combination cancelled because just one item!:\n"
-                                                          "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
-                                                          )
-                                                     );
-                        }
+                        qDebug("только одна фишка в кобинации - отмена");
                         combination.clear();
                     }
                     else
                     {
-                        {
-                            QMessageBox::critical(this, QString("Combination"),
-                                                  QString("Combination complete!:\n"
-                                                          "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
-                                                          )
-                                                     );
-                        }
+                        qDebug("комбинация завершена");
                         complete_combination();
                     }
                 }
             }
             else
             {
-
-
-                {
-                QMessageBox::warning(this, QString("Combination"),
-                                         QString("Фишка не соседняя!!:\n"
-                                                 "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
-                                                 )
-                                         );
-                }
+               qDebug("фишка не соседняя");
                qobject_cast<Cell*>(sender())->deactivate();
             }
         }
@@ -173,26 +134,12 @@ void Field::slotFromChip()
         {
             if ( adjacency_check(qobject_cast<Cell*>(sender())) )
             {
-
-                {
-                QMessageBox::warning(this, QString("Combination"),
-                                         QString("Фишка не подходит по цвету!:\n"
-                                                 "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
-                                                 )
-                                         );
-                }
-            qobject_cast<Cell*>(sender())->deactivate();
+                qDebug("фишка не подходит по цвету");
+                qobject_cast<Cell*>(sender())->deactivate();
             }
             else
             {
-
-                {
-                QMessageBox::warning(this, QString("Combination"),
-                                         QString("Фишка не соседняя!!:\n"
-                                                 "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
-                                                 )
-                                         );
-                }
+                qDebug("фишка не подходит по цвету");
                 qobject_cast<Cell*>(sender())->deactivate();
             }
         }
@@ -212,10 +159,6 @@ void Field::createWindow()
     grid = new QGridLayout();
     grid->setSpacing(SPACE);
     grid->setContentsMargins(15, 15, 15, 15);
-    //grid->setContentsMargins(SPACE, SPACE, SPACE, SPACE);
-
-
-
 
     cell_matrix = new Cell**[rows];
     for(size_t i = 0; i < rows; i++)
@@ -237,7 +180,6 @@ void Field::complete_combination()
     unsigned int score = 0;
     while(!combination.isEmpty())
     {
-        //QMessageBox::information(this, "", QString("random " + QString::number(combination.count()) + " chip"));
         score += combination.last()->get_chip()->points;
         combination.last()->random_chip();
         combination.takeLast()->deactivate();
