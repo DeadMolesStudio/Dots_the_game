@@ -250,11 +250,14 @@ void Field::createWindow()
 
 void Field::complete_combination()
 {
+    unsigned int score = 0;
     while(!combination.isEmpty())
     {
-        QMessageBox::information(this, "", QString("random " + QString::number(combination.count()) + " chip"));
+        //QMessageBox::information(this, "", QString("random " + QString::number(combination.count()) + " chip"));
+        score += combination.top()->get_chip()->points;
         combination.top()->random_chip();
         combination.pop()->deactivate();
     }
+    QMessageBox::information(this, "", QString("Combination score: " + QString::number(score) + " points"));
 }
 
