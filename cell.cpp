@@ -14,8 +14,8 @@ Cell::Cell(QWidget *parent) :
     QWidget(parent)
 {
     pointer_chip = new Chip();
-    in_combination = 0;
-    this->setFixedSize(CHIP_RADIUS +2,CHIP_RADIUS +2);
+    in_combination = false;
+    this->setFixedSize(CHIP_RADIUS + 2,CHIP_RADIUS + 2);
     // устанавливаем цвет фона
 //    QPalette Pal(palette());
 //    Pal.setColor(QPalette::Background, Qt::green);
@@ -40,6 +40,11 @@ bool Cell::is_blocked()
     return blocked;
 }
 
+bool Cell::is_in_combination()
+{
+    return in_combination;
+}
+
 void Cell::paintEvent(QPaintEvent *event)
 {
 
@@ -49,15 +54,6 @@ void Cell::paintEvent(QPaintEvent *event)
 
         painter.setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::FlatCap));
         painter.drawEllipse(1, 1, CHIP_RADIUS,CHIP_RADIUS);
-
-//        switch (in_combination) {
-//        case 0:
-//            activate_graphics(&painter);
-//            break;
-//        case 1:
-//            deactivate_graphics(&painter);
-//            break;
-//        }
 
         if (!in_combination)
         {
@@ -69,51 +65,6 @@ void Cell::paintEvent(QPaintEvent *event)
         }
 }
 
-/*
-void Cell::paintEvent(QPaintEvent *event)
-{
-    Q_UNUSED(event);
-    QPainter painter(this);
-    switch(pointer_chip->color)
-            {
-            case 0:
-                painter.setBrush(QBrush(QColor(157,129,186,255), Qt::SolidPattern));
-                break;
-            case 1:
-                painter.setBrush(QBrush(QColor(255,255,82,255), Qt::SolidPattern));
-                break;
-            case 2:
-                painter.setBrush(QBrush(QColor(0,255,127,255), Qt::SolidPattern));
-                break;
-            case 3:
-                painter.setBrush(QBrush(QColor(0,65,106,255), Qt::SolidPattern));
-                break;
-            case 4:
-                painter.setBrush(QBrush(QColor(197,29,52,255), Qt::SolidPattern));
-                break;
-            default:
-                QMessageBox::critical(this, QString("ЭТО не работает"), "ошибка в выбооре цвета");
-                break;
-            }
-
-            painter.setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::FlatCap));
-            painter.drawEllipse(1, 1, CHIP_RADIUS,CHIP_RADIUS);
-
-            switch(in_combination){
-            case 0:
-                painter.setPen(QPen(Qt::white, 3, Qt::SolidLine, Qt::FlatCap));
-                painter.drawEllipse(1, 1, CHIP_RADIUS,CHIP_RADIUS);
-                in_combination = 1;
-                break;
-
-            case 1:
-                painter.setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::FlatCap));
-                painter.drawEllipse(1, 1, CHIP_RADIUS,CHIP_RADIUS);
-                in_combination = 0;
-                break;
-            }
-}
-*/
 
 void Cell::mousePressEvent(QMouseEvent *event)
 {
@@ -137,13 +88,13 @@ Cell::~Cell()
 
 void Cell::activate()
 {
-    in_combination = 1;
+    in_combination = true;
     update();
 }
 
 void Cell::deactivate()
 {
-    in_combination = 0;
+    in_combination = false;
     update();
 }
 
@@ -151,14 +102,14 @@ void Cell::activate_graphics(QPainter *painter)
 {
     painter->setPen(QPen(Qt::white, 3, Qt::SolidLine, Qt::FlatCap));
     painter->drawEllipse(1, 1, CHIP_RADIUS,CHIP_RADIUS);
-    in_combination = 1;
+    in_combination = true;
 }
 
 void Cell::deactivate_graphics(QPainter *painter)
 {
     painter->setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::FlatCap));
     painter->drawEllipse(1, 1, CHIP_RADIUS,CHIP_RADIUS);
-    in_combination = 0;
+    in_combination = false;
 }
 
 void Cell::update_chip_model(QPainter *painter)
@@ -188,6 +139,5 @@ void Cell::update_chip_model(QPainter *painter)
     default:
         painter->setBrush(QBrush(QColor(QRgb(0x000000)), Qt::SolidPattern));
         QMessageBox::critical(this, "", "ошибка в выбооре цвета");
-        break;
     }
 }

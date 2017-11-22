@@ -11,7 +11,7 @@
 
 class Field : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
   explicit Field(QWidget *parent = 0, size_t rows = 0, size_t cols = 0);
   Cell* get_cell(size_t row, size_t col);
@@ -38,7 +38,7 @@ private:
   Cell ***cells;
 
 private slots:
-    void slotFromChip();
+  void slotFromChip();
 };
 
 

@@ -17,10 +17,10 @@ Cell* Field::get_cell(size_t row, size_t col)
 
 void Field::random_field()
 {
-    for(size_t i = 0; i < rows; i++)
+    for (size_t i = 0; i < rows; i++)
+    {
+        for (size_t j = 0; j < cols; j++)
         {
-        for(size_t j = 0; j < cols; j++)
-            {
             if (!cell_matrix[i][j]->is_blocked())
             {
                 cell_matrix[i][j]->random_chip();
@@ -31,13 +31,13 @@ void Field::random_field()
 
 void Field::check_field()//проверяет наличие комбинаций на поле(шахматный порядок(чекнуть в случае с вырезами у краев))
 {
-    while(true)
+    while (true)
     {
-        for(size_t i = 0; i < rows; i++)
+        for (size_t i = 0; i < rows; i++)
         {
-            for(size_t j = (i % 2); j < cols-2; j+=2)
+            for (size_t j = (i % 2); j < cols-2; j+=2)
             {
-               if(check_cell(i, j)) return;
+               if (check_cell(i, j)) return;
             }
         }
         random_field();
@@ -70,54 +70,6 @@ bool Field::check_cell(size_t row, size_t col)
     return 0;
 }
 
-/*
-//void Field::update_field()
-//{
-//    for (size_t temp_col = 0; temp_col < cols; temp_col++)
-//    {
-//        int temp_row = rows - 1; // последняя строка
-//        while (Cell* temp_empty_cell = get_empty_cell(temp_col, temp_row) != nullptr)
-//        {
-//            Cell* temp_not_empty_cell = get_not_empty_cell(temp_col, temp_row);
-//            if (temp_not_empty_cell == nullptr)
-//                get_empty_cell->random_chip();
-//            else
-//            {
-//                temp_empty_cell->get_chip() = temp_not_empty_cell->get_chip();
-//                temp_not_empty_cell->get_chip() = nullptr;
-//            }
-//        }
-//    }
-//}
-
-//Cell* Field::get_empty_cell(size_t temp_col, size_t& temp_row)
-//{
-//    for (int i = temp_row; i > -1; i--)
-//    {
-//        if (cell_matrix[temp_col][i].get_chip() == nullptr)
-//        {
-//            if (cell_matrix[temp_col][i].is_blocked())
-//                continue;
-//            temp_row = i;
-//            return &cell_matrix[temp_col][temp_row];
-//        }
-//    }
-//    return nullptr;
-//}
-
-//Cell* Field::get_not_empty_cell(size_t temp_col, size_t& temp_row)
-//{
-//    for (int i = temp_row; i > -1; i--)
-//    {
-//        if (cell_matrix[temp_col][i].get_chip() != nullptr)
-//        {
-//            return &cell_matrix[temp_col][temp_row];
-//        }
-//    }
-//    return nullptr;
-//}
-*/
-
 Field::~Field()
 {
     for (size_t i = 0; i < rows; i++)
@@ -134,18 +86,16 @@ void Field::slotFromChip()
     if(combination.isEmpty())
     {
     //если первая фишка в комбинации
-
-    {
+        {
         QMessageBox::information(this, QString("Combination"),
                                  QString("First added to combination:\n"
                                          "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
                                          )
                                  );
 
-    }
+        }
         combination.append( qobject_cast<Cell*>(sender()) );
     }
-
     //если это не первая фишка
     else
     {
@@ -156,41 +106,55 @@ void Field::slotFromChip()
             {
                 if (qobject_cast<Cell*>(sender()) != combination.last())
                 {
-
+                    if ( qobject_cast<Cell*>(sender()) != combination.last() )
+                    {
+                        if ( !qobject_cast<Cell*>(sender())->is_in_combination() )
                         {
-                        QMessageBox::information(this, QString("Combination"),
-                                                 QString("Added to combination:\n"
-                                                         "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color) +
-                                                         "\nchips in combination:" + QString::number(combination.count() + 1)
-                                                         )
-                                                 );
+                            combination.append( qobject_cast<Cell*>(sender()) );
+                            {
+                                QMessageBox::information(this, QString("Combination"),
+                                                         QString("Added to combination:\n"
+                                                                 "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color) +
+                                                                 "\nchips in combination:" + QString::number(combination.count())
+                                                                 )
+                                                         );
+                            }
                         }
-                    combination.append( qobject_cast<Cell*>(sender()) );
+                        else
+                        {
+
+                            {
+                                QMessageBox::information(this, QString("Combination"),
+                                                         QString("Chip is already in combination:\n"
+                                                                 "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color))
+                                                         );
+                            }
+                            qobject_cast<Cell*>(sender())->activate();
+                        }
+                    }
                 }
                 else
                 {
                     if (combination.count() == 1)
                     {
-
-                            {
+                        {
                             QMessageBox::critical(this, QString("Combination"),
-                                                     QString("Combination cancelled because just one item!:\n"
-                                                             "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
-                                                             )
+                                                  QString("Combination cancelled because just one item!:\n"
+                                                          "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
+                                                          )
                                                      );
-                            }
+                        }
                         combination.clear();
                     }
                     else
                     {
-
-                            {
+                        {
                             QMessageBox::critical(this, QString("Combination"),
-                                                     QString("Combination complete!:\n"
-                                                             "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
-                                                             )
+                                                  QString("Combination complete!:\n"
+                                                          "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color)
+                                                          )
                                                      );
-                            }
+                        }
                         complete_combination();
                     }
                 }
@@ -287,31 +251,31 @@ void Field::complete_combination()
 }
 
 bool Field::adjacency_check(Cell *added)
- {
-     size_t i = 0;
-     size_t j = 0;
-     bool found = 0;
-     for (i = 0; i < rows; i++)
-     {
-         for (j = 0; j < cols; j++)
-         {
-             if (cell_matrix[i][j] == combination.last())
-             {
-                 found = 1;
-                 break;
-             }
-         }
-         if (found) break;
-     }
-     //up
-     if (i > 0 && added == cell_matrix[i - 1][j]) return 1;
-     //down
-     if (i < rows - 1 && added == cell_matrix[i + 1][j]) return 1;
-     //left
-     if (j > 0 && added == cell_matrix[i][j - 1]) return 1;
-     //right
-     if (j < cols - 1 && added == cell_matrix[i][j + 1]) return 1;
-     //cell_matrix[i][j]
-     if (added == cell_matrix[i][j]) return 1;//если щелкнули на последнюю фишку
-     return 0;
- }
+{
+    size_t i = 0;
+    size_t j = 0;
+    bool found = 0;
+    for (i = 0; i < rows; i++)
+    {
+        for (j = 0; j < cols; j++)
+        {
+            if (cell_matrix[i][j] == combination.last())
+            {
+                found = 1;
+                break;
+            }
+        }
+        if (found) break;
+    }
+    //up
+    if (i > 0 && added == cell_matrix[i - 1][j]) return 1;
+    //down
+    if (i < rows - 1 && added == cell_matrix[i + 1][j]) return 1;
+    //left
+    if (j > 0 && added == cell_matrix[i][j - 1]) return 1;
+    //right
+    if (j < cols - 1 && added == cell_matrix[i][j + 1]) return 1;
+    //cell_matrix[i][j]
+    if (added == cell_matrix[i][j]) return 1;//если щелкнули на последнюю фишку
+    return 0;
+}

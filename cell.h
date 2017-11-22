@@ -11,13 +11,14 @@
 
 class Cell : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
   Cell(QWidget *parent = 0);
   Cell(Chip *chip, bool blocked);
   Chip* get_chip();
   void random_chip();
   bool is_blocked();
+  bool is_in_combination();
   ~Cell();
 
   void paintEvent(QPaintEvent *event);
@@ -39,7 +40,7 @@ private:
   //QPainter cell_painter;
 
 signals:
-    void signal1();
+  void signal1();
 };
 
 #endif // CELL_H
