@@ -7,6 +7,7 @@
 #include <QWidget>
 #include <QMessageBox>
 #include <QGridLayout>
+#include <QRgb>
 
 class Field : public QWidget
 {
@@ -20,7 +21,6 @@ public:
   void check_field();//проверяет наличие комбинаций на поле(шахматный порядок(чекнуть в случае с вырезами у краев))
   Cell* get_empty_cell(size_t temp_col, size_t& temp_row);
   Cell* get_not_empty_cell(size_t temp_col, size_t& temp_row);
-  void start_combination(Cell *first);
   ~Field();
 
 private:
@@ -28,8 +28,9 @@ private:
   Cell ***cell_matrix;
   size_t rows;
   size_t cols;
-  QStack<Cell*> combination;//TODO:откуда будем брать стэк?
+  QVector<Cell*> combination;
   void complete_combination();
+  bool adjacency_check(Cell *added);
 
   //графика
   void createWindow();

@@ -1,4 +1,20 @@
 #include "cell.h"
+////TODO:избавиться от макросов
+//#define YELLOW 255,244,79,255
+//#define GREEN 0,106,78,255
+//#define DARK_BLUE 60,99,240,255
+//#define RED 255,42,77,255
+//#define PURPLE 153,102,204,255
+#include <QColor>
+#include <QRgb>
+
+enum class Chip_colors {
+    Yellow = 0xffff99,
+    Green = 0xffc8a8,
+    Dark_blue = 0x9370d8,
+    Red = 0xfc6c85,
+    Purple = 0xea8df7
+};
 
 static const int CHIP_RADIUS = 25;
 
@@ -37,19 +53,27 @@ void Cell::paintEvent(QPaintEvent *event)
 
         Q_UNUSED(event);
         QPainter painter(this);
-
         update_chip_model(&painter);
 
         painter.setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::FlatCap));
         painter.drawEllipse(1, 1, CHIP_RADIUS,CHIP_RADIUS);
 
-        switch (in_combination) {
-        case 0:
+//        switch (in_combination) {
+//        case 0:
+//            activate_graphics(&painter);
+//            break;
+//        case 1:
+//            deactivate_graphics(&painter);
+//            break;
+//        }
+
+        if (in_combination)
+        {
             activate_graphics(&painter);
-            break;
-        case 1:
+        }
+        else
+        {
             deactivate_graphics(&painter);
-            break;
         }
 }
 
@@ -150,25 +174,28 @@ void Cell::update_chip_model(QPainter *painter)
     switch(pointer_chip->color)
     {
     case 0:
-        painter->setBrush(QBrush(QColor(157,129,186,255), Qt::SolidPattern));
+        //dark blue
+        painter->setBrush(QBrush(QColor(QRgb(Chip_colors::Dark_blue)), Qt::SolidPattern));
         break;
     case 1:
-        painter->setBrush(QBrush(QColor(255,255,82,255), Qt::SolidPattern));
+        //yellow
+        painter->setBrush(QBrush(QColor(QRgb(Chip_colors::Yellow)), Qt::SolidPattern));
         break;
     case 2:
-        painter->setBrush(QBrush(QColor(0,255,127,255), Qt::SolidPattern));
+        //purple
+        painter->setBrush(QBrush(QColor(QRgb(Chip_colors::Purple)), Qt::SolidPattern));
         break;
     case 3:
-        painter->setBrush(QBrush(QColor(0,65,106,255), Qt::SolidPattern));
+        //red
+        painter->setBrush(QBrush(QColor(QRgb(Chip_colors::Red)), Qt::SolidPattern));
         break;
     case 4:
-        painter->setBrush(QBrush(QColor(197,29,52,255), Qt::SolidPattern));
+        //green
+        painter->setBrush(QBrush(QColor(QRgb(Chip_colors::Green)), Qt::SolidPattern));
         break;
     default:
-        painter->setBrush(QBrush(QColor(0,0,0,255), Qt::SolidPattern));
+        painter->setBrush(QBrush(QColor(QRgb(0x000000)), Qt::SolidPattern));
         QMessageBox::critical(this, "", "ошибка в выбооре цвета");
         break;
     }
-
 }
-

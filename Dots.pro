@@ -15,14 +15,16 @@ TEMPLATE = app
 SOURCES += main.cpp\
     cell.cpp \
     chip.cpp \
-    field.cpp
+    field.cpp \
+    level.cpp
 
 
 
 
 HEADERS  += cell.h \
     chip.h \
-    field.h
+    field.h \
+    level.h
 
 
 
