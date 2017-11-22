@@ -1,12 +1,4 @@
 #include "cell.h"
-////TODO:избавиться от макросов
-//#define YELLOW 255,244,79,255
-//#define GREEN 0,106,78,255
-//#define DARK_BLUE 60,99,240,255
-//#define RED 255,42,77,255
-//#define PURPLE 153,102,204,255
-#include <QColor>
-#include <QRgb>
 
 enum class Chip_colors {
     Yellow = 0xffff99,
@@ -67,7 +59,7 @@ void Cell::paintEvent(QPaintEvent *event)
 //            break;
 //        }
 
-        if (in_combination)
+        if (!in_combination)
         {
             activate_graphics(&painter);
         }

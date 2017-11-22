@@ -241,6 +241,7 @@ void Field::slotFromChip()
 
 void Field::createWindow()
 {
+    this->setWindowTitle(QString("Dots"));
     this->setFixedSize(cols * (CHIP_RADIUS + SPACE) + 30, rows * (CHIP_RADIUS + SPACE) + 30);    // Фиксируем размеры виджета(окна)
     QPalette Pal(palette());
     // устанавливаем цвет фона

@@ -7,6 +7,7 @@
 #include <QPalette>
 #include <QMessageBox>
 #include <QColor>
+#include <QRgb>
 
 class Cell : public QWidget
 {
