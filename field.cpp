@@ -106,32 +106,28 @@ void Field::slotFromChip()
             {
                 if (qobject_cast<Cell*>(sender()) != combination.last())
                 {
-                    if ( qobject_cast<Cell*>(sender()) != combination.last() )
-                    {
-                        if ( !qobject_cast<Cell*>(sender())->is_in_combination() )
-                        {
-                            combination.append( qobject_cast<Cell*>(sender()) );
-                            {
-                                QMessageBox::information(this, QString("Combination"),
-                                                         QString("Added to combination:\n"
-                                                                 "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color) +
-                                                                 "\nchips in combination:" + QString::number(combination.count())
-                                                                 )
+                   if ( !qobject_cast<Cell*>(sender())->is_in_combination() )
+                   {
+                       combination.append( qobject_cast<Cell*>(sender()) );
+                       {
+                           QMessageBox::information(this, QString("Combination"),
+                                                    QString("Added to combination:\n"
+                                                            "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color) +
+                                                            "\nchips in combination:" + QString::number(combination.count())
+                                                            )
                                                          );
                             }
-                        }
-                        else
-                        {
-
-                            {
-                                QMessageBox::information(this, QString("Combination"),
-                                                         QString("Chip is already in combination:\n"
-                                                                 "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color))
-                                                         );
-                            }
-                            qobject_cast<Cell*>(sender())->activate();
-                        }
-                    }
+                   }
+                   else
+                   {
+                       {
+                           QMessageBox::information(this, QString("Combination"),
+                                                     QString("Chip is already in combination:\n"
+                                                             "color:" + QString::number( qobject_cast<Cell*>(sender())->get_chip()->color))
+                                                     );
+                       }
+                       qobject_cast<Cell*>(sender())->activate();
+                   }
                 }
                 else
                 {
