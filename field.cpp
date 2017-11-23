@@ -83,10 +83,12 @@ Field::~Field()
 
 void Field::slotFromChip()
 {
+    qDebug("SLOT_FROM_CHIP");
     if(combination.isEmpty())
     {
     //если первая фишка в комбинации
         qDebug("первая фишка в комбинации");
+        qobject_cast<Cell*>(sender())->activate();
         combination.append( qobject_cast<Cell*>(sender()) );
     }
     //если это не первая фишка
@@ -102,6 +104,7 @@ void Field::slotFromChip()
                    if ( !qobject_cast<Cell*>(sender())->is_in_combination() )
                    {
                        combination.append( qobject_cast<Cell*>(sender()) );
+                       qobject_cast<Cell*>(sender())->activate();
                        qDebug("фишка добавлена в комбинацию");
                    }
                    else
@@ -115,6 +118,7 @@ void Field::slotFromChip()
                     if (combination.count() == 1)
                     {
                         qDebug("только одна фишка в кобинации - отмена");
+                        qobject_cast<Cell*>(sender())->deactivate();
                         combination.clear();
                     }
                     else
@@ -184,8 +188,9 @@ void Field::complete_combination()
         combination.last()->random_chip();
         combination.takeLast()->deactivate();
     }
-    QMessageBox::information(this, "", QString("Combination score: " + QString::number(score) + " points"));
+    //QMessageBox::information(this, "", QString("Combination score: " + QString::number(score) + " points"));
     combination.clear();
+    qDebug("COMPLETE_COMBINATION");
 }
 
 bool Field::adjacency_check(Cell *added)

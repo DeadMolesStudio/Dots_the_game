@@ -9,6 +9,14 @@
 #include <QColor>
 #include <QRgb>
 
+enum class Chip_colors {
+    Yellow = 0xffff99,
+    Green = 0xffc8a8,
+    Dark_blue = 0x9370d8,
+    Red = 0xfc6c85,
+    Purple = 0xea8df7
+};
+
 class Cell : public QWidget
 {
   Q_OBJECT
@@ -26,6 +34,7 @@ public:
   void deactivate();
 //  void enterEvent(QEvent *event);
 //  void leaveEvent(QEvent *event);
+ // void mouseMoveEvent(QMouseEvent *event);
 
 protected:
   void mousePressEvent(QMouseEvent *event);

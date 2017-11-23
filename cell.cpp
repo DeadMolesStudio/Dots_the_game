@@ -1,13 +1,5 @@
 #include "cell.h"
 
-enum class Chip_colors {
-    Yellow = 0xffff99,
-    Green = 0xffc8a8,
-    Dark_blue = 0x9370d8,
-    Red = 0xfc6c85,
-    Purple = 0xea8df7
-};
-
 static const int CHIP_RADIUS = 25;
 
 Cell::Cell(QWidget *parent) :
@@ -44,13 +36,14 @@ void Cell::paintEvent(QPaintEvent *event)
 {
 
         Q_UNUSED(event);
+        qDebug("paintEvent");
         QPainter painter(this);
         update_chip_model(&painter);
 
         painter.setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::FlatCap));
         painter.drawEllipse(1, 1, CHIP_RADIUS,CHIP_RADIUS);
 
-        if (!in_combination)
+        if (in_combination)
         {
             activate_graphics(&painter);
         }
@@ -63,9 +56,11 @@ void Cell::paintEvent(QPaintEvent *event)
 
 void Cell::mousePressEvent(QMouseEvent *event)
 {
+    emit signal1();
+    qDebug("mousePressEvent");
     QWidget::mousePressEvent(event);
     update();
-    emit signal1();
+
 }
 
 Cell::~Cell()
@@ -75,32 +70,37 @@ Cell::~Cell()
 
 void Cell::activate()
 {
-    in_combination = false;
+    qDebug("activate");
+    in_combination = true;
     update();
 }
 
 void Cell::deactivate()
 {
-    in_combination = true;
+    qDebug("deactivate");
+    in_combination = false;
     update();
 }
 
 void Cell::activate_graphics(QPainter *painter)
 {
+    qDebug("activate_graphics");
     painter->setPen(QPen(Qt::white, 3, Qt::SolidLine, Qt::FlatCap));
     painter->drawEllipse(1, 1, CHIP_RADIUS,CHIP_RADIUS);
-    in_combination = true;
+
 }
 
 void Cell::deactivate_graphics(QPainter *painter)
 {
+    qDebug("deactivate_graphics");
     painter->setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::FlatCap));
     painter->drawEllipse(1, 1, CHIP_RADIUS,CHIP_RADIUS);
-    in_combination = false;
+
 }
 
 void Cell::update_chip_model(QPainter *painter)
 {
+    qDebug("update_chip_model");
     switch(pointer_chip->color)
     {
     case 0:
@@ -132,19 +132,38 @@ void Cell::update_chip_model(QPainter *painter)
 //void Cell::enterEvent(QEvent *event)
 //{
 //    Q_UNUSED(event);
-//    QPalette Pal(palette());
-//    // устанавливаем цвет фона
-//    Pal.setColor(QPalette::Background, QColor(QRgb(0x000000)));
-//    this->setAutoFillBackground(true);
-//    this->setPalette(Pal);
+//    //QPalette Pal(palette());
+////    // устанавливаем цвет фона
+////    Pal.setColor(QPalette::Background, QColor(QRgb(0x000000)));
+////    this->setAutoFillBackground(true);
+////    this->setPalette();
+//    QPainter painter;
+//    painter.setPen(QPen(Qt::black, 3, Qt::SolidLine, Qt::FlatCap));
+//    painter.drawEllipse(CHIP_RADIUS/2 - 2,CHIP_RADIUS/2 - 2,4,4);
+//    qDebug("enter");
 //}
 
 //void Cell::leaveEvent(QEvent *event)
 //{
 //    Q_UNUSED(event);
-//    QPalette Pal(palette());
-//    // устанавливаем цвет фона
-//    Pal.setColor(QPalette::Background, QColor(QRgb(0xe6e6fa)));
-//    this->setAutoFillBackground(true);
-//    this->setPalette(Pal);
+//    QPainter painter;
+//    painter.setPen(QPen(Qt::white, 3, Qt::SolidLine, Qt::FlatCap));
+//    painter.drawEllipse(CHIP_RADIUS/2 - 2,CHIP_RADIUS/2 - 2,4,4);
+////    QPalette Pal(palette());
+////    // устанавливаем цвет фона
+////    Pal.setColor(QPalette::Background, QColor(QRgb(0xe6e6fa)));
+////    this->setAutoFillBackground(true);
+////    this->setPalette(Pal);
+//    qDebug("leave");
+//}
+
+//void Cell::mouseMoveEvent(QMouseEvent *event)
+//{
+//    Q_UNUSED(event);
+//        QPalette Pal(palette());
+//        // устанавливаем цвет фона
+//        Pal.setColor(QPalette::Background, QColor(QRgb(0xe6e6fa)));
+//        this->setAutoFillBackground(true);
+//        this->setPalette(Pal);
+//        deactivate();
 //}
