@@ -32,11 +32,15 @@ public:
   void paintEvent(QPaintEvent *event);
   void activate();
   void deactivate();
-//  void enterEvent(QEvent *event);
-//  void leaveEvent(QEvent *event);
- // void mouseMoveEvent(QMouseEvent *event);
+  void enterEvent(QEvent *event);
+  void leaveEvent(QEvent *event);
+  void mouseMoveEvent(QMouseEvent *event);
+  void QHoverEvent();
+//  void mouseReleaseEvent(QMouseEvent *event);
+//  void mousePressEvent(QMouseEvent *event);
 
 protected:
+  void mouseReleaseEvent(QMouseEvent *event);
   void mousePressEvent(QMouseEvent *event);
   void update_chip_model(QPainter *painter);
   void activate_graphics(QPainter *painter);
@@ -51,7 +55,12 @@ private:
   //QPainter cell_painter;
 
 signals:
-  void signal1();
+  //void signal1();
+  void pressSignal();
+  void enterSignal();
+  void leaveSignal();
+  void releaseSignal();
+  //void moveSignal();
 };
 
 #endif // CELL_H

@@ -38,7 +38,11 @@ private:
   Cell ***cells;
 
 private slots:
-  void slotFromChip();
+  //void slotFromChip();
+  void pressSlot();
+  void releaseSlot();
+  void leaveSlot();
+  void enterSlot();
 };
 
 

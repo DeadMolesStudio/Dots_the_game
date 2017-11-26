@@ -1,5 +1,5 @@
 #include "cell.h"
-
+#include <QApplication>
 static const int CHIP_RADIUS = 25;
 
 Cell::Cell(QWidget *parent) :
@@ -36,7 +36,7 @@ void Cell::paintEvent(QPaintEvent *event)
 {
 
         Q_UNUSED(event);
-        qDebug("paintEvent");
+        //qDebug("paintEvent");
         QPainter painter(this);
         update_chip_model(&painter);
 
@@ -53,16 +53,6 @@ void Cell::paintEvent(QPaintEvent *event)
         }
 }
 
-
-void Cell::mousePressEvent(QMouseEvent *event)
-{
-    emit signal1();
-    qDebug("mousePressEvent");
-    QWidget::mousePressEvent(event);
-    update();
-
-}
-
 Cell::~Cell()
 {
     delete pointer_chip;
@@ -70,21 +60,21 @@ Cell::~Cell()
 
 void Cell::activate()
 {
-    qDebug("activate");
+    //qDebug("activate");
     in_combination = true;
     update();
 }
 
 void Cell::deactivate()
 {
-    qDebug("deactivate");
+    //qDebug("deactivate");
     in_combination = false;
     update();
 }
 
 void Cell::activate_graphics(QPainter *painter)
 {
-    qDebug("activate_graphics");
+    //qDebug("activate_graphics");
     painter->setPen(QPen(Qt::white, 3, Qt::SolidLine, Qt::FlatCap));
     painter->drawEllipse(1, 1, CHIP_RADIUS,CHIP_RADIUS);
 
@@ -92,7 +82,7 @@ void Cell::activate_graphics(QPainter *painter)
 
 void Cell::deactivate_graphics(QPainter *painter)
 {
-    qDebug("deactivate_graphics");
+    //qDebug("deactivate_graphics");
     painter->setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::FlatCap));
     painter->drawEllipse(1, 1, CHIP_RADIUS,CHIP_RADIUS);
 
@@ -100,7 +90,7 @@ void Cell::deactivate_graphics(QPainter *painter)
 
 void Cell::update_chip_model(QPainter *painter)
 {
-    qDebug("update_chip_model");
+    //qDebug("update_chip_model");
     switch(pointer_chip->color)
     {
     case 0:
@@ -129,41 +119,68 @@ void Cell::update_chip_model(QPainter *painter)
     }
 }
 
-//void Cell::enterEvent(QEvent *event)
-//{
-//    Q_UNUSED(event);
-//    //QPalette Pal(palette());
-////    // устанавливаем цвет фона
-////    Pal.setColor(QPalette::Background, QColor(QRgb(0x000000)));
-////    this->setAutoFillBackground(true);
-////    this->setPalette();
-//    QPainter painter;
-//    painter.setPen(QPen(Qt::black, 3, Qt::SolidLine, Qt::FlatCap));
-//    painter.drawEllipse(CHIP_RADIUS/2 - 2,CHIP_RADIUS/2 - 2,4,4);
-//    qDebug("enter");
-//}
+void Cell::mousePressEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event);
+    qDebug("mousePressEvent");
+    //setMouseTracking(true);
+    emit pressSignal();
+    QWidget::mousePressEvent(event);
+    //update();
 
-//void Cell::leaveEvent(QEvent *event)
-//{
-//    Q_UNUSED(event);
-//    QPainter painter;
-//    painter.setPen(QPen(Qt::white, 3, Qt::SolidLine, Qt::FlatCap));
-//    painter.drawEllipse(CHIP_RADIUS/2 - 2,CHIP_RADIUS/2 - 2,4,4);
-////    QPalette Pal(palette());
-////    // устанавливаем цвет фона
-////    Pal.setColor(QPalette::Background, QColor(QRgb(0xe6e6fa)));
-////    this->setAutoFillBackground(true);
-////    this->setPalette(Pal);
-//    qDebug("leave");
-//}
+}
 
-//void Cell::mouseMoveEvent(QMouseEvent *event)
-//{
-//    Q_UNUSED(event);
+void Cell::mouseReleaseEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event);
+    qDebug("mouseReleaseEvent");
+    emit releaseSignal();
+}
+
+void Cell::enterEvent(QEvent *event)
+{
+    Q_UNUSED(event);
+//    QPalette Pal(palette());
+//    // устанавливаем цвет фона
+//    Pal.setColor(QPalette::Background, QColor(QRgb(0x000000)));
+//    this->setAutoFillBackground(true);
+//    this->setPalette(Pal);
+    qDebug("enterEvent");
+
+    emit enterSignal();
+}
+
+void Cell::leaveEvent(QEvent *event)
+{
+    Q_UNUSED(event);
+//    QPalette Pal(palette());
+//    // устанавливаем цвет фона
+//    Pal.setColor(QPalette::Background, QColor(QRgb(0xe6e6fa)));
+//    this->setAutoFillBackground(true);
+//    this->setPalette(Pal);
+    qDebug("leaveEvent");
+    emit leaveSignal();
+}
+
+void Cell::mouseMoveEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event);
 //        QPalette Pal(palette());
 //        // устанавливаем цвет фона
 //        Pal.setColor(QPalette::Background, QColor(QRgb(0xe6e6fa)));
 //        this->setAutoFillBackground(true);
 //        this->setPalette(Pal);
-//        deactivate();
-//}
+        //deactivate();
+    qDebug("moveEvent");
+    char * temp = new char[2];
+    temp[0] = (char)this->pointer_chip->color;
+    temp[1] = '\0';
+    qDebug(temp);
+    QWidget::mouseMoveEvent(event);
+
+}
+
+void Cell::QHoverEvent()
+{
+
+}

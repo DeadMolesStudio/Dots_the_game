@@ -81,74 +81,74 @@ Field::~Field()
     delete grid;
 }
 
-void Field::slotFromChip()
-{
-    qDebug("SLOT_FROM_CHIP");
-    if(combination.isEmpty())
-    {
-    //если первая фишка в комбинации
-        qDebug("первая фишка в комбинации");
-        qobject_cast<Cell*>(sender())->activate();
-        combination.append( qobject_cast<Cell*>(sender()) );
-    }
-    //если это не первая фишка
-    else
-    {
-        if (qobject_cast<Cell*>(sender())->get_chip()->color == combination.last()->get_chip()->color)
-                //если цвет совпадает
-        {
-            if ( adjacency_check(qobject_cast<Cell*>(sender())) )
-            {
-                if (qobject_cast<Cell*>(sender()) != combination.last())
-                {
-                   if ( !qobject_cast<Cell*>(sender())->is_in_combination() )
-                   {
-                       combination.append( qobject_cast<Cell*>(sender()) );
-                       qobject_cast<Cell*>(sender())->activate();
-                       qDebug("фишка добавлена в комбинацию");
-                   }
-                   else
-                   {
-                       qDebug("фишка уже в кобинации - отмена");
-                       qobject_cast<Cell*>(sender())->activate();
-                   }
-                }
-                else
-                {
-                    if (combination.count() == 1)
-                    {
-                        qDebug("только одна фишка в кобинации - отмена");
-                        qobject_cast<Cell*>(sender())->deactivate();
-                        combination.clear();
-                    }
-                    else
-                    {
-                        qDebug("комбинация завершена");
-                        complete_combination();
-                    }
-                }
-            }
-            else
-            {
-               qDebug("фишка не соседняя");
-               qobject_cast<Cell*>(sender())->deactivate();
-            }
-        }
-        else //цвет не совпадает
-        {
-            if ( adjacency_check(qobject_cast<Cell*>(sender())) )
-            {
-                qDebug("фишка не подходит по цвету");
-                qobject_cast<Cell*>(sender())->deactivate();
-            }
-            else
-            {
-                qDebug("фишка не подходит по цвету");
-                qobject_cast<Cell*>(sender())->deactivate();
-            }
-        }
-    }
-}
+//void Field::slotFromChip()
+//{
+//    qDebug("SLOT_FROM_CHIP");
+//    if(combination.isEmpty())
+//    {
+//    //если первая фишка в комбинации
+//        qDebug("первая фишка в комбинации");
+//        qobject_cast<Cell*>(sender())->activate();
+//        combination.append( qobject_cast<Cell*>(sender()) );
+//    }
+//    //если это не первая фишка
+//    else
+//    {
+//        if (qobject_cast<Cell*>(sender())->get_chip()->color == combination.last()->get_chip()->color)
+//                //если цвет совпадает
+//        {
+//            if ( adjacency_check(qobject_cast<Cell*>(sender())) )
+//            {
+//                if (qobject_cast<Cell*>(sender()) != combination.last())
+//                {
+//                   if ( !qobject_cast<Cell*>(sender())->is_in_combination() )
+//                   {
+//                       combination.append( qobject_cast<Cell*>(sender()) );
+//                       qobject_cast<Cell*>(sender())->activate();
+//                       qDebug("фишка добавлена в комбинацию");
+//                   }
+//                   else
+//                   {
+//                       qDebug("фишка уже в кобинации - отмена");
+//                       qobject_cast<Cell*>(sender())->activate();
+//                   }
+//                }
+//                else
+//                {
+//                    if (combination.count() == 1)
+//                    {
+//                        qDebug("только одна фишка в кобинации - отмена");
+//                        qobject_cast<Cell*>(sender())->deactivate();
+//                        combination.clear();
+//                    }
+//                    else
+//                    {
+//                        qDebug("комбинация завершена");
+//                        complete_combination();
+//                    }
+//                }
+//            }
+//            else
+//            {
+//               qDebug("фишка не соседняя");
+//               qobject_cast<Cell*>(sender())->deactivate();
+//            }
+//        }
+//        else //цвет не совпадает
+//        {
+//            if ( adjacency_check(qobject_cast<Cell*>(sender())) )
+//            {
+//                qDebug("фишка не подходит по цвету");
+//                qobject_cast<Cell*>(sender())->deactivate();
+//            }
+//            else
+//            {
+//                qDebug("фишка не подходит по цвету");
+//                qobject_cast<Cell*>(sender())->deactivate();
+//            }
+//        }
+//    }
+//}
 
 void Field::createWindow()
 {
@@ -171,7 +171,11 @@ void Field::createWindow()
         for (size_t j = 0; j < cols; j++)
         {
             cell_matrix[i][j] = new Cell();
-            connect(cell_matrix[i][j], &Cell::signal1,this, &Field::slotFromChip);
+//            connect(cell_matrix[i][j], &Cell::signal1,this, &Field::slotFromChip);
+            connect(cell_matrix[i][j], &Cell::pressSignal,this, &Field::pressSlot);
+            connect(cell_matrix[i][j], &Cell::leaveSignal,this, &Field::leaveSlot);
+            connect(cell_matrix[i][j], &Cell::enterSignal,this, &Field::enterSlot);
+            connect(cell_matrix[i][j], &Cell::releaseSignal,this, &Field::releaseSlot);
             grid->addWidget(cell_matrix[i][j], i,j);
         }
     }
@@ -221,4 +225,106 @@ bool Field::adjacency_check(Cell *added)
     //cell_matrix[i][j]
     if (added == cell_matrix[i][j]) return 1;//если щелкнули на последнюю фишку
     return 0;
+}
+
+void Field::pressSlot()
+{
+    qDebug("PRESS_SLOT");
+    if(combination.isEmpty())
+    {
+    //если первая фишка в комбинации
+        qDebug("первая фишка в комбинации");
+        qobject_cast<Cell*>(sender())->activate();
+        combination.append( qobject_cast<Cell*>(sender()) );
+    }
+    //тк нажатие происходит только один раз за комбинацию,
+    //значит тут будет происходить добавление первой фишки в вектор и отрисовка выделения
+}
+
+void Field::releaseSlot()
+{
+    qDebug("RELEASE_SLOT");
+    if (combination.count() == 1)
+    {
+        qDebug("только одна фишка в кобинации - отмена");
+        qobject_cast<Cell*>(sender())->deactivate();
+        combination.clear();
+    }
+    else
+    {
+        qDebug("комбинация завершена");
+        complete_combination();
+    }
+
+    //отпускание будет также происходить по завершении комбинации,
+    //но возможен вариант, что мы отпускаем, когда только одна фишка в векторе
+    //проверяем наличие комбинаций на поле
+}
+
+void Field::leaveSlot()
+{
+    qDebug("LEAVE_SLOT");
+//    if (qobject_cast<Cell*>(sender()) == )
+    //здесь надо проверять нажата ли мышь в данный момент(?)
+    //или проверять, есть ли текущая комбинация(?)
+    //если фишка, область которой мы покинули, нам подходит(т.е проверяем все условия)
+    //то добавляем ее в вектор
+    //иначе ничего не делаем
+}
+
+void Field::enterSlot()
+{
+    qDebug("ENTER_SLOT");
+    if(combination.isEmpty()) return;
+    if (qobject_cast<Cell*>(sender())->get_chip()->color == combination.last()->get_chip()->color)
+            //если цвет совпадает
+    {
+        if ( adjacency_check(qobject_cast<Cell*>(sender())) )
+        {
+            if (qobject_cast<Cell*>(sender()) != combination.last())
+            {
+               if ( !qobject_cast<Cell*>(sender())->is_in_combination() )
+               {
+                   combination.append( qobject_cast<Cell*>(sender()) );
+                   qobject_cast<Cell*>(sender())->activate();
+                   qDebug("фишка добавлена в комбинацию");
+               }
+               else
+               {
+                   qDebug("фишка уже в кобинации - отмена");
+                   qobject_cast<Cell*>(sender())->activate();
+               }
+            }
+            else
+            {
+                qDebug("только одна фишка в кобинации - отмена");
+                qobject_cast<Cell*>(sender())->deactivate();
+                combination.clear();
+                //вот тут отменяем анимацию последней
+            }
+        }
+        else
+        {
+           qDebug("фишка не соседняя");
+           qobject_cast<Cell*>(sender())->deactivate();
+        }
+    }
+    else //цвет не совпадает
+    {
+        if ( adjacency_check(qobject_cast<Cell*>(sender())) )
+        {
+            qDebug("фишка не подходит по цвету");
+            qobject_cast<Cell*>(sender())->deactivate();
+        }
+        else
+        {
+            qDebug("фишка не подходит по цвету");
+            qobject_cast<Cell*>(sender())->deactivate();
+        }
+    }
+    //проверяем, нажата ли мышь
+    //проверка по всем параметрам фишки
+    //если фишка такая же, как и предыдущая, то вычеркиваем последнюю из комбинации и отменяем ее выделение
+    //если подходит, то отрисовываем выделение, добавляем в вектор
+    //??
 }
