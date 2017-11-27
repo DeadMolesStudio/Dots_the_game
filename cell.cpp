@@ -178,6 +178,10 @@ void Cell::mouseMoveEvent(QMouseEvent *event)
     qDebug(temp);
     QWidget::mouseMoveEvent(event);
 
+//    if (event->state() & LeftButton)
+//        setImagePixel(event->pos(), true);
+//      else if (event->state() & RightButton)
+//        setImagePixel(event->pos(), false);
 }
 
 void Cell::QHoverEvent()
