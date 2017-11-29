@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QGridLayout>
 #include <QRgb>
+#include <QDebug>
 
 class Field : public QWidget
 {
@@ -39,6 +40,9 @@ private:
 
 private slots:
   void slotFromChip();
+
+signals:
+    void plusScore(unsigned int add_score);
 };
 
 

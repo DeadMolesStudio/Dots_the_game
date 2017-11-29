@@ -190,7 +190,8 @@ void Field::complete_combination()
     }
     //QMessageBox::information(this, "", QString("Combination score: " + QString::number(score) + " points"));
     combination.clear();
-    qDebug("COMPLETE_COMBINATION");
+    emit plusScore(score);
+    qDebug() << "COMPLETE_COMBINATION. points :" << score;
 }
 
 bool Field::adjacency_check(Cell *added)
