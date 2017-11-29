@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QColor>
 #include <QRgb>
+#include <QMouseEvent>
 
 enum class Chip_colors {
     Yellow = 0xffff99,
@@ -35,7 +36,6 @@ public:
   void enterEvent(QEvent *event);
   void leaveEvent(QEvent *event);
   void mouseMoveEvent(QMouseEvent *event);
-  void QHoverEvent();
 //  void mouseReleaseEvent(QMouseEvent *event);
 //  void mousePressEvent(QMouseEvent *event);
 
@@ -60,7 +60,7 @@ signals:
   void enterSignal();
   void leaveSignal();
   void releaseSignal();
-  //void moveSignal();
+  void moveSignal(QPoint mouse_pos);
 };
 
 #endif // CELL_H

@@ -8,6 +8,7 @@ Field::Field(QWidget *,size_t rows, size_t cols) :
     rows(rows), cols(cols)
 {
     createWindow();
+    setMouseTracking(false);
 }
 
 Cell* Field::get_cell(size_t row, size_t col)
@@ -176,6 +177,8 @@ void Field::createWindow()
             connect(cell_matrix[i][j], &Cell::leaveSignal,this, &Field::leaveSlot);
             connect(cell_matrix[i][j], &Cell::enterSignal,this, &Field::enterSlot);
             connect(cell_matrix[i][j], &Cell::releaseSignal,this, &Field::releaseSlot);
+            connect(cell_matrix[i][j], &Cell::moveSignal,this, &Field::moveSlot);
+
             grid->addWidget(cell_matrix[i][j], i,j);
         }
     }
@@ -193,6 +196,7 @@ void Field::complete_combination()
         combination.takeLast()->deactivate();
     }
     //QMessageBox::information(this, "", QString("Combination score: " + QString::number(score) + " points"));
+    emit plusScore(score);
     combination.clear();
     qDebug("COMPLETE_COMBINATION");
 }
@@ -241,6 +245,33 @@ void Field::pressSlot()
     //значит тут будет происходить добавление первой фишки в вектор и отрисовка выделения
 }
 
+void Field::moveSlot(QPoint mouse_pos)
+{
+    qDebug("MOVE_SLOT");
+    for (size_t i = 0; i < rows; i++)
+    {
+        for (size_t j = 0; j < cols; j++)
+        {
+            //qDebug("in forfor");
+            if (cell_matrix[i][j]->rect().contains(cell_matrix[i][j]->mapFromGlobal(mouse_pos)))
+            {
+
+                qDebug("in if {...}");
+                QString temp = QString("i = " + QString::number(i) + " j = " + QString::number(j));
+                qDebug() << temp;/*temp.toStdString().c_str());*/
+                add_to_combination(cell_matrix[i][j]);
+                return;
+                //break;
+            }
+            else
+            {
+                //qDebug("else {...}");
+            }
+        }
+    }
+
+}
+
 void Field::releaseSlot()
 {
     qDebug("RELEASE_SLOT");
@@ -272,10 +303,66 @@ void Field::leaveSlot()
     //иначе ничего не делаем
 }
 
+void Field::add_to_combination(Cell* added)
+{
+    qDebug("ADD_TO_COMBINATION");
+    if(combination.isEmpty()) return;
+    if (added->get_chip()->color == combination.last()->get_chip()->color)
+            //если цвет совпадает
+    {
+        if ( adjacency_check(added) )
+        {
+            if (added != combination.last())
+            {
+               if ( !added->is_in_combination() )
+               {
+                   combination.append( added );
+                   added->activate();
+                   qDebug("фишка добавлена в комбинацию");
+               }
+               else
+               {
+                   qDebug("фишка уже в кобинации - отмена");
+                   added->activate();
+               }
+            }
+            else
+            {
+                qDebug("только одна фишка в кобинации - отмена");
+                added->deactivate();
+                combination.clear();
+                //вот тут отменяем анимацию последней
+            }
+        }
+        else
+        {
+           qDebug("фишка не соседняя");
+           added->deactivate();
+        }
+    }
+    else //цвет не совпадает
+    {
+        if ( adjacency_check(qobject_cast<Cell*>(sender())) )
+        {
+            qDebug("фишка не подходит по цвету");
+            added->deactivate();
+        }
+        else
+        {
+            qDebug("фишка не подходит по цвету");
+            added->deactivate();
+        }
+    }
+}
+
 void Field::enterSlot()
 {
     qDebug("ENTER_SLOT");
-    if(combination.isEmpty()) return;
+    if(combination.isEmpty())
+    {
+        qDebug() << "endof ENTER_SLOT";
+        return;
+    }
     if (qobject_cast<Cell*>(sender())->get_chip()->color == combination.last()->get_chip()->color)
             //если цвет совпадает
     {
@@ -327,4 +414,5 @@ void Field::enterSlot()
     //если фишка такая же, как и предыдущая, то вычеркиваем последнюю из комбинации и отменяем ее выделение
     //если подходит, то отрисовываем выделение, добавляем в вектор
     //??
+    qDebug() << "endof ENTER_SLOT";
 }

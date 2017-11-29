@@ -7,6 +7,7 @@ Level::Level(QWidget *, int max_moves, size_t rows, size_t cols) :
      score(0), max_moves(max_moves), cur_moves(0)
 {
     field = new Field(this, rows, cols);
+    connect(field, &Field::plusScore, this, &Level::update_score_Slot);
     createLevelWindow();
 }
 
@@ -24,7 +25,7 @@ void Level::createLevelWindow()
     grid->setContentsMargins(SPACE, SPACE, SPACE, SPACE);
     //QPushButton *exit = new QPushButton();
 
-    score_text = new QTextEdit(QString("SCORE"));
+    score_text = new QTextEdit(QString::number(score));
     score_text->setFixedSize(field->width(), 40);
     score_text->setFrameStyle(0);
     score_text->setDisabled(true);
@@ -37,6 +38,12 @@ void Level::createLevelWindow()
     this->setLayout(grid);
     //this->setFixedSize(field->width(), field->height() + score_text->height());
     this->setFixedSize(this->sizeHint());
+}
+
+void Level::update_score_Slot(unsigned int add_score)
+{
+    qDebug("update_score_Slot");
+    score += add_score;
 }
 
 Level::~Level()

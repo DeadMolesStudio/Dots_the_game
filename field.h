@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QGridLayout>
 #include <QRgb>
+#include <QDebug>
 
 class Field : public QWidget
 {
@@ -21,6 +22,7 @@ public:
   void check_field();//проверяет наличие комбинаций на поле(шахматный порядок(чекнуть в случае с вырезами у краев))
   Cell* get_empty_cell(size_t temp_col, size_t& temp_row);
   Cell* get_not_empty_cell(size_t temp_col, size_t& temp_row);
+  void add_to_combination(Cell* added);
   ~Field();
 
 private:
@@ -43,6 +45,10 @@ private slots:
   void releaseSlot();
   void leaveSlot();
   void enterSlot();
+  void moveSlot(QPoint mouse_pos);
+
+signals:
+  void plusScore(unsigned int add_score);
 };
 
 

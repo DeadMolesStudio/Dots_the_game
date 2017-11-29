@@ -32,6 +32,9 @@ private:
   QGridLayout *grid;
   QTextEdit *score_text;
 
+private slots:
+  void update_score_Slot(unsigned int add_score);
+
 };
 
 #endif // LEVEL_H
