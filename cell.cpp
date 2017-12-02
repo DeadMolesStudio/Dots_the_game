@@ -8,7 +8,6 @@ Cell::Cell(QWidget *parent) :
     pointer_chip = new Chip();
     in_combination = false;
     this->setFixedSize(CHIP_RADIUS + 2,CHIP_RADIUS + 2);
-    setMouseTracking(true);
 }
 
 
@@ -41,7 +40,7 @@ void Cell::paintEvent(QPaintEvent *event)
         QPainter painter(this);
         update_chip_model(&painter);
 
-        painter.setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::FlatCap));
+        painter.setPen(QPen(Qt::black, 0, Qt::SolidLine, Qt::FlatCap));
         painter.drawEllipse(1, 1, CHIP_RADIUS,CHIP_RADIUS);
 
         if (in_combination)
@@ -123,8 +122,7 @@ void Cell::update_chip_model(QPainter *painter)
 void Cell::mousePressEvent(QMouseEvent *event)
 {
     Q_UNUSED(event);
-    qDebug("mousePressEvent");
-    //setMouseTracking(true);
+    //qDebug("mousePressEvent");
     emit pressSignal();
     QWidget::mousePressEvent(event);
     //update();
@@ -134,14 +132,14 @@ void Cell::mousePressEvent(QMouseEvent *event)
 void Cell::mouseReleaseEvent(QMouseEvent *event)
 {
     Q_UNUSED(event);
-    qDebug("mouseReleaseEvent");
+    //qDebug("mouseReleaseEvent");
     emit releaseSignal();
 }
 
 void Cell::enterEvent(QEvent *event)
 {
     Q_UNUSED(event);
-    qDebug("enterEvent");
+    //qDebug("enterEvent");
     emit enterSignal();
 }
 
@@ -149,43 +147,13 @@ void Cell::enterEvent(QEvent *event)
 void Cell::leaveEvent(QEvent *event)
 {
     Q_UNUSED(event);
-//    QPalette Pal(palette());
-//    // устанавливаем цвет фона
-//    Pal.setColor(QPalette::Background, QColor(QRgb(0xe6e6fa)));
-//    this->setAutoFillBackground(true);
-//    this->setPalette(Pal);
-    qDebug("leaveEvent");
+    //qDebug("leaveEvent");
     emit leaveSignal();
 }
 
 void Cell::mouseMoveEvent(QMouseEvent *event)
 {
-//        QPalette Pal(palette());
-//        // устанавливаем цвет фона
-//        Pal.setColor(QPalette::Background, QColor(QRgb(0xe6e6fa)));
-//        this->setAutoFillBackground(true);
-//        this->setPalette(Pal);
-        //deactivate();
-    qDebug("moveEvent");
-    //QWidget::mouseMoveEvent(event);
-    //QPoint last = QWidget::mapToParent(event->pos());
-
-//    while(!parentWidget()->findChildren<Cell*>().isEmpty())
-//    {
-//        qDebug("in while{...}");
-//        if (parentWidget()->findChildren<Cell*>().last()->frameGeometry().contains(event->pos()))
-//        {
-//            qDebug("in if {...}");
-//            Cell* current = parentWidget()->findChildren<Cell*>().last();
-//            current->enterEvent(0);
-//            break;
-//        }
-//        else
-//        {
-//            qDebug("else {...}");
-//            parentWidget()->findChildren<Cell*>().takeLast();
-//        }
-//    }
+    //qDebug("moveEvent");
     QPoint temp = mapToGlobal(event->pos());
     emit moveSignal(temp);
 }

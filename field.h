@@ -33,6 +33,7 @@ private:
   QVector<Cell*> combination;
   void complete_combination();
   bool adjacency_check(Cell *added);
+  void repaint_field();
 
   //графика
   void createWindow();

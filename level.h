@@ -5,6 +5,7 @@
 #include <QTextEdit>
 #include <QGridLayout>
 #include <QPalette>
+#include <QVector>
 
 class Level : public QWidget
 {
@@ -30,7 +31,7 @@ private:
 
   //графика
   QGridLayout *grid;
-  QTextEdit *score_text;
+  QVector<QTextEdit *> text;
 
 private slots:
   void update_score_Slot(unsigned int add_score);
