@@ -60,7 +60,7 @@ void Level::update_score_Slot(unsigned int add_score)
     {
         unsigned int bonus = (max_moves - cur_moves) * 5 * 3;
         QMessageBox::information(this, "ПОБЕДА", QString("Победа! Ваши очки: ") + QString::number(score) +
-                                 QString("\nБонус за ходы: ") + QString::number(bonus) +
+                                 QString("\nБонус за оставшиеся ходы: ") + QString::number(bonus) +
                                  QString("\nВсего: ") + QString::number(score+bonus));
         this->close();
     }

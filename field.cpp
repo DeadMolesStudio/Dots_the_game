@@ -17,6 +17,7 @@ Cell* Field::get_cell(size_t row, size_t col)
 
 void Field::random_field()
 {
+    qDebug() << "RANDOM_FIELD";
     for (size_t i = 0; i < rows; i++)
     {
         for (size_t j = 0; j < cols; j++)
@@ -31,6 +32,7 @@ void Field::random_field()
 
 void Field::check_field()//проверяет наличие комбинаций на поле(шахматный порядок(чекнуть в случае с вырезами у краев))
 {
+    qDebug() << "CHECK_FIELD";
     while (true)
     {
         for (size_t i = 0; i < rows; i++)
@@ -175,7 +177,7 @@ void Field::createWindow()
             grid->addWidget(cell_matrix[i][j], i,j);
         }
     }
-
+    check_field();
     this->setLayout(grid);
 }
 
@@ -191,6 +193,7 @@ void Field::complete_combination()
     //QMessageBox::information(this, "", QString("Combination score: " + QString::number(score) + " points"));
     combination.clear();
     emit plusScore(score);
+    check_field();
     qDebug() << "COMPLETE_COMBINATION. points :" << score;
 }
 

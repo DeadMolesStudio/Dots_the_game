@@ -5,9 +5,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    Level level(0, 5, 7, 7);
+    Level level(0, 5, 6, 6);
     level.show();
-//    Field w(0, 7, 7);
-//    w.show();
     return a.exec();
 }
