@@ -16,7 +16,9 @@ SOURCES += main.cpp\
     cell.cpp \
     chip.cpp \
     field.cpp \
-    level.cpp
+    level.cpp \
+    requirement.cpp \
+    reqset.cpp
 
 
 
@@ -24,7 +26,9 @@ SOURCES += main.cpp\
 HEADERS  += cell.h \
     chip.h \
     field.h \
-    level.h
+    level.h \
+    requirement.h \
+    reqset.h
 
 
 

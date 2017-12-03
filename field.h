@@ -50,6 +50,7 @@ private slots:
 
 signals:
   void plusScore(unsigned int add_score);
+  void check_reqs_for_cell(Chip test);
 };
 
 

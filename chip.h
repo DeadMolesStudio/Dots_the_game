@@ -6,6 +6,7 @@
 struct Chip
 {
   Chip();//points заполняется в зависимости от shape
+  Chip(const Chip &other);
   Chip(int shape, int color);
 
   int shape;

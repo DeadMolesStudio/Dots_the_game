@@ -6,13 +6,16 @@
 #include <QGridLayout>
 #include <QPalette>
 #include <QVector>
+#include "requirement.h"
+#include "reqset.h"
+#include <QDebug>
+#include <QCoreApplication>
 
 class Level : public QWidget
 {
       Q_OBJECT
 public:
   Level(QWidget *parent = 0, int max_moves = 10, size_t rows = 6, size_t cols = 6);
-  //void check_reqs(Cell* cell);
   //TODO:pause  ?
   //TODO:start  ?
   //TODO:stop ?
@@ -22,12 +25,13 @@ public:
   void createLevelWindow();
 
 private:
+  ReqSet *reqset;
   Field *field;
   unsigned int score;
   int max_moves;
   int cur_moves;
 
-  //QVector<Requirement> reqs;
+  QVector<Requirement> reqs;
 
   //графика
   QGridLayout *grid;
@@ -35,6 +39,10 @@ private:
 
 private slots:
   void update_score_Slot(unsigned int add_score);
+  void check_reqs_Slot(Chip test);
+
+signals:
+  void update_reqs_info(QVector<Requirement> reqs);
 
 };
 

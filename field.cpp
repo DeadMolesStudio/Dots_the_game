@@ -135,6 +135,7 @@ void Field::complete_combination()
     while(!combination.isEmpty())
     {
         score += combination.last()->get_chip()->points;
+        emit check_reqs_for_cell(*(combination.last()->get_chip()));
         combination.last()->random_chip();
         combination.takeLast()->deactivate();
     }
@@ -154,6 +155,7 @@ void Field::complete_quadr_combination()
     while(!combination.isEmpty())
     {
         score += combination.last()->get_chip()->points;
+        emit check_reqs_for_cell(*(combination.last()->get_chip()));
         combination.last()->random_chip();
         combination.last()->set_quadr_flag(false);
         combination.takeLast()->deactivate();
@@ -378,6 +380,7 @@ unsigned int Field::quadr()
             if (cell_matrix[i][j]->get_chip()->color == combination.last()->get_chip()->color && !cell_matrix[i][j]->is_in_quadr())
             {
                 local_score += cell_matrix[i][j]->get_chip()->points;
+                emit check_reqs_for_cell(*(cell_matrix[i][j]->get_chip()));
                 cell_matrix[i][j]->deactivate();
                 cell_matrix[i][j]->random_chip();
             }

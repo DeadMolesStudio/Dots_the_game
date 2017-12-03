@@ -26,7 +26,7 @@ class Cell : public QWidget
   Q_OBJECT
 public:
   Cell(QWidget *parent = 0);
-  Cell(Chip *chip, bool blocked);
+  Cell(QWidget *parent, Chip chip, bool blocked);
   Chip* get_chip();
   void random_chip();
   bool is_blocked();
@@ -55,6 +55,7 @@ protected:
 
 private:
   bool blocked;
+  bool destroing;
   Chip *pointer_chip;
 
   //QRectF boundingRect() const;

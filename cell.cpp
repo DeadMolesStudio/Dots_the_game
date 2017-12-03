@@ -5,12 +5,24 @@ static const int CHIP_RADIUS = 25;
 Cell::Cell(QWidget *parent) :
     QWidget(parent)
 {
+    blocked = false;
+    destroing = false;
     pointer_chip = new Chip();
     in_combination = false;
     in_quadr = false;
     this->setFixedSize(CHIP_RADIUS + 2,CHIP_RADIUS + 2);
 }
 
+Cell::Cell(QWidget *parent, Chip chip, bool blocked)
+    : QWidget(parent)
+{
+    this->blocked = blocked;
+    destroing = false;
+    pointer_chip = new Chip(chip);
+    in_combination = false;
+    in_quadr = false;
+    this->setFixedSize(CHIP_RADIUS + 2,CHIP_RADIUS + 2);
+}
 
 Chip* Cell::get_chip()
 {

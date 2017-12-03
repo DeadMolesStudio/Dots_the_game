@@ -14,9 +14,25 @@ Chip::Chip()
     points = (1 + shape) * 5;
 }
 
+Chip::Chip(const Chip &other)
+{
+    shape = other.shape;
+    color = other.color;
+    points = other.points;
+}
+
 Chip::Chip(int shape, int color) :
     shape(shape), color(color)
 {
     points = (1 + shape) * 5;
 }
 
+//Y, O, R, B, P
+
+//Y -> O, R
+//O -> B, P
+//B -> B, R
+//P -> O, Y
+//R -> Y, P
+
+//oo, pp, bb, rr, yy
