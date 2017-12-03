@@ -19,8 +19,12 @@ Chip* Cell::get_chip()
 
 void Cell::random_chip()
 {
+    int old_color = pointer_chip->color;
+    do
+    {
     delete pointer_chip;
     pointer_chip  = new Chip();
+    } while (pointer_chip->color == old_color);
 }
 
 bool Cell::is_blocked()
@@ -52,8 +56,8 @@ void Cell::paintEvent(QPaintEvent *event)
         update_chip_model(&painter);
 
         painter.setRenderHint(QPainter::Antialiasing, true);
-        painter.setPen(QPen(Qt::black, 0, Qt::SolidLine, Qt::FlatCap));
-        painter.drawEllipse(1, 1, CHIP_RADIUS,CHIP_RADIUS);
+
+        drawChip(&painter);
 
         if (in_combination)
         {
@@ -88,16 +92,25 @@ void Cell::activate_graphics(QPainter *painter)
 {
     //qDebug("activate_graphics");
     painter->setPen(QPen(Qt::white, 3, Qt::SolidLine, Qt::FlatCap));
-    painter->drawEllipse(1, 1, CHIP_RADIUS,CHIP_RADIUS);
-
+    drawChip(painter);
 }
 
 void Cell::deactivate_graphics(QPainter *painter)
 {
     //qDebug("deactivate_graphics");
+//    if (pointer_chip->color == 0)
+//    {
+//        QVector<QPoint> points;
+//        points.append(QPoint(1 + CHIP_RADIUS/2, 1 + 2));
+//        points.append(QPoint(CHIP_RADIUS, CHIP_RADIUS));
+//        points.append(QPoint(1, CHIP_RADIUS));
+//        QPolygon triangle(points);
+//        painter->setBrush(QBrush(QColor(QRgb(Chip_colors::Dark_blue)), Qt::SolidPattern));
+//        painter->drawPolygon(points);
+//        return;
+//    }
     painter->setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::FlatCap));
-    painter->drawEllipse(1, 1, CHIP_RADIUS,CHIP_RADIUS);
-
+    drawChip(painter);
 }
 
 void Cell::update_chip_model(QPainter *painter)
@@ -128,6 +141,33 @@ void Cell::update_chip_model(QPainter *painter)
     default:
         painter->setBrush(QBrush(QColor(QRgb(0x000000)), Qt::SolidPattern));
         QMessageBox::critical(this, "", "ошибка в выбооре цвета");
+    }
+}
+
+void Cell::drawTriangle(QPainter *painter)
+{
+        QVector<QPoint> points;
+        points.append(QPoint(1 + CHIP_RADIUS/2, 1 + 2));
+        points.append(QPoint(CHIP_RADIUS, CHIP_RADIUS));
+        points.append(QPoint(1, CHIP_RADIUS));
+        QPolygon triangle(points);
+        painter->drawPolygon(points);
+        points.clear();
+}
+
+void Cell::drawChip(QPainter *painter)
+{
+    switch (pointer_chip->shape)
+    {
+    case 0:
+        painter->drawEllipse(1, 1, CHIP_RADIUS,CHIP_RADIUS);
+        break;
+    case 1:
+        drawTriangle(painter);
+        break;
+    default:
+        qDebug() << "shape error";
+        break;
     }
 }
 
@@ -169,4 +209,5 @@ void Cell::mouseMoveEvent(QMouseEvent *event)
     QPoint temp = mapToGlobal(event->pos());
     emit moveSignal(temp);
 }
+
 

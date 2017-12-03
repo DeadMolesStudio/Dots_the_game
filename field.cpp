@@ -148,17 +148,13 @@ void Field::complete_quadr_combination()
 {
     unsigned int score = 0;
     score += quadr();
-    int old_color = combination.last()->get_chip()->color;
 //        TODO: вызывать ее в релизивенте вместо комплет в случае квадра
 //                сюда надо вкопипастить все из комплита с учетом рандома фишек без старого цвета
     combination.takeLast();//чтобы последняя(она же первая) фишка не считалась дважды
     while(!combination.isEmpty())
     {
         score += combination.last()->get_chip()->points;
-        while(combination.last()->get_chip()->color == old_color)
-        {
-            combination.last()->random_chip();
-        }
+        combination.last()->random_chip();
         combination.last()->set_quadr_flag(false);
         combination.takeLast()->deactivate();
     }
@@ -383,10 +379,7 @@ unsigned int Field::quadr()
             {
                 local_score += cell_matrix[i][j]->get_chip()->points;
                 cell_matrix[i][j]->deactivate();
-                while (cell_matrix[i][j]->get_chip()->color == combination.last()->get_chip()->color)
-                {
-                    cell_matrix[i][j]->random_chip();
-                }
+                cell_matrix[i][j]->random_chip();
             }
         }
     }

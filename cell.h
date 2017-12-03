@@ -9,6 +9,9 @@
 #include <QColor>
 #include <QRgb>
 #include <QMouseEvent>
+#include <QLine>
+#include <QVector>
+#include <QDebug>
 
 enum class Chip_colors {
     Yellow = 0xffff99,
@@ -47,6 +50,8 @@ protected:
   void update_chip_model(QPainter *painter);
   void activate_graphics(QPainter *painter);
   void deactivate_graphics(QPainter *painter);
+  void drawTriangle(QPainter *painter);
+  void drawChip(QPainter *painter);
 
 private:
   bool blocked;
