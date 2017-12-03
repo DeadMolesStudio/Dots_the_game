@@ -118,10 +118,7 @@ void Field::createWindow()
         for (size_t j = 0; j < cols; j++)
         {
             cell_matrix[i][j] = new Cell();
-//            connect(cell_matrix[i][j], &Cell::signal1,this, &Field::slotFromChip);
             connect(cell_matrix[i][j], &Cell::pressSignal,this, &Field::pressSlot);
-            connect(cell_matrix[i][j], &Cell::leaveSignal,this, &Field::leaveSlot);
-            connect(cell_matrix[i][j], &Cell::enterSignal,this, &Field::enterSlot);
             connect(cell_matrix[i][j], &Cell::releaseSignal,this, &Field::releaseSlot);
             connect(cell_matrix[i][j], &Cell::moveSignal,this, &Field::moveSlot);
 
@@ -141,10 +138,33 @@ void Field::complete_combination()
         combination.last()->random_chip();
         combination.takeLast()->deactivate();
     }
-    //QMessageBox::information(this, "", QString("Combination score: " + QString::number(score) + " points"));
     emit plusScore(score);
     combination.clear();
     //qDebug("COMPLETE_COMBINATION");
+    check_field();
+}
+
+void Field::complete_quadr_combination()
+{
+    unsigned int score = 0;
+    score += quadr();
+    int old_color = combination.last()->get_chip()->color;
+//        TODO: вызывать ее в релизивенте вместо комплет в случае квадра
+//                сюда надо вкопипастить все из комплита с учетом рандома фишек без старого цвета
+    combination.takeLast();//чтобы последняя(она же первая) фишка не считалась дважды
+    while(!combination.isEmpty())
+    {
+        score += combination.last()->get_chip()->points;
+        while(combination.last()->get_chip()->color == old_color)
+        {
+            combination.last()->random_chip();
+        }
+        combination.last()->set_quadr_flag(false);
+        combination.takeLast()->deactivate();
+    }
+    emit plusScore(score);
+    combination.clear();
+    //qDebug("COMPLETE_QUADR_COMBINATION");
     check_field();
 }
 
@@ -232,23 +252,15 @@ void Field::releaseSlot()
     else
     {
        // qDebug("комбинация завершена");
-        complete_combination();
+        if (combination.count() == 5 && combination.last() == combination.first())
+        {
+            complete_quadr_combination();
+        }
+        else
+        {
+            complete_combination();
+        }
     }
-
-    //отпускание будет также происходить по завершении комбинации,
-    //но возможен вариант, что мы отпускаем, когда только одна фишка в векторе
-    //проверяем наличие комбинаций на поле
-}
-
-void Field::leaveSlot()
-{
-   // qDebug("LEAVE_SLOT");
-//    if (qobject_cast<Cell*>(sender()) == )
-    //здесь надо проверять нажата ли мышь в данный момент(?)
-    //или проверять, есть ли текущая комбинация(?)
-    //если фишка, область которой мы покинули, нам подходит(т.е проверяем все условия)
-    //то добавляем ее в вектор
-    //иначе ничего не делаем
 }
 
 void Field::add_to_combination(Cell* added)
@@ -271,20 +283,66 @@ void Field::add_to_combination(Cell* added)
                if (combination.count() > 1 && added == combination[combination.count() - 2])
                {
                    //qDebug("тупо минус фишка");
-                   combination.takeLast()->deactivate();
-                   //qDebug() << "вы навели куда надо";
+                   if (combination.count() == 5 && combination.last() == combination.first())
+                   {
+                       for (size_t i = 0; i < rows; i++)
+                       {
+                           for (size_t j = 0; j < cols; j++)
+                           {
+                               if (cell_matrix[i][j]->get_chip()->color == added->get_chip()->color && !cell_matrix[i][j]->is_in_quadr())
+                               {
+                                   cell_matrix[i][j]->deactivate();
+                               }
+                           }
+                       }
+                       combination.takeLast();
+                   }
+                   else
+                   {
+                       combination.takeLast()->deactivate();
+                   }
+                   //qDebug() << "вы навели на предыдущую фишку - отмена последней фишки";
                    return;
                }
                if ( !added->is_in_combination() )
                {
+                   if (combination.count() == 5 && combination.last() == combination.first())
+                   {
+                       qDebug() << "вы пытаетесь обузить очки, сэр";
+                       added->deactivate();
+                   }
+                   else
+                   {
                    combination.append( added );
                    added->activate();
      //              qDebug("фишка добавлена в комбинацию");
+                   }
                }
                else
                {
        //            qDebug("фишка уже в кобинации - отмена");
                    added->activate();
+                   if (combination.count() == 4 && added == combination.first())
+                   {
+                       qDebug() << "квадрик найден";
+                       for (size_t i = 0; i < combination.count(); i++)
+                       {
+                           combination[i]->set_quadr_flag(true);
+                       }
+                       combination.append( added );
+                       for (size_t i = 0; i < rows; i++)
+                       {
+                           for (size_t j = 0; j < cols; j++)
+                           {
+                               if (cell_matrix[i][j]->get_chip()->color == added->get_chip()->color)
+                               {
+                                   cell_matrix[i][j]->activate();//may be only graphics activate?
+                               }
+                           }
+                       }
+                       //анимашка в видел часиков
+                       return;
+                   }
                }
             }
             else
@@ -313,64 +371,24 @@ void Field::add_to_combination(Cell* added)
     }
 }
 
-void Field::enterSlot()
+unsigned int Field::quadr()
 {
-//    qDebug("ENTER_SLOT");
-    if(combination.isEmpty())
+    qDebug() << "quadr";
+    unsigned int local_score = 0;
+    for (size_t i = 0; i < rows; i++)
     {
-    //    qDebug() << "endof ENTER_SLOT";
-        return;
-    }
-    if (qobject_cast<Cell*>(sender())->get_chip()->color == combination.last()->get_chip()->color)
-            //если цвет совпадает
-    {
-        if ( adjacency_check(qobject_cast<Cell*>(sender())) )
+        for (size_t j = 0; j < cols; j++)
         {
-            if (qobject_cast<Cell*>(sender()) != combination.last())
+            if (cell_matrix[i][j]->get_chip()->color == combination.last()->get_chip()->color && !cell_matrix[i][j]->is_in_quadr())
             {
-               if ( !qobject_cast<Cell*>(sender())->is_in_combination() )
-               {
-                   combination.append( qobject_cast<Cell*>(sender()) );
-                   qobject_cast<Cell*>(sender())->activate();
-      //             qDebug("фишка добавлена в комбинацию");
-               }
-               else
-               {
-        //           qDebug("фишка уже в кобинации - отмена");
-                   qobject_cast<Cell*>(sender())->activate();
-               }
-            }
-            else
-            {
-          //      qDebug("только одна фишка в кобинации - отмена");
-                qobject_cast<Cell*>(sender())->deactivate();
-                combination.clear();
-                //вот тут отменяем анимацию последней
+                local_score += cell_matrix[i][j]->get_chip()->points;
+                cell_matrix[i][j]->deactivate();
+                while (cell_matrix[i][j]->get_chip()->color == combination.last()->get_chip()->color)
+                {
+                    cell_matrix[i][j]->random_chip();
+                }
             }
         }
-        else
-        {
-        //   qDebug("фишка не соседняя");
-           qobject_cast<Cell*>(sender())->deactivate();
-        }
     }
-    else //цвет не совпадает
-    {
-        if ( adjacency_check(qobject_cast<Cell*>(sender())) )
-        {
-          //  qDebug("фишка не подходит по цвету");
-            qobject_cast<Cell*>(sender())->deactivate();
-        }
-        else
-        {
-            //qDebug("фишка не подходит по цвету");
-            qobject_cast<Cell*>(sender())->deactivate();
-        }
-    }
-    //проверяем, нажата ли мышь
-    //проверка по всем параметрам фишки
-    //если фишка такая же, как и предыдущая, то вычеркиваем последнюю из комбинации и отменяем ее выделение
-    //если подходит, то отрисовываем выделение, добавляем в вектор
-    //??
-    //qDebug() << "endof ENTER_SLOT";
+    return local_score;
 }

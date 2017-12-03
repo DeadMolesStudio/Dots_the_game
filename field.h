@@ -32,8 +32,10 @@ private:
   size_t cols;
   QVector<Cell*> combination;
   void complete_combination();
+  void complete_quadr_combination();
   bool adjacency_check(Cell *added);
   void repaint_field();
+  unsigned int quadr();
 
   //графика
   void createWindow();
@@ -44,8 +46,6 @@ private slots:
   //void slotFromChip();
   void pressSlot();
   void releaseSlot();
-  void leaveSlot();
-  void enterSlot();
   void moveSlot(QPoint mouse_pos);
 
 signals:

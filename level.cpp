@@ -21,11 +21,11 @@ void Level::createLevelWindow()
     this->setPalette(Pal);
 
     grid = new QGridLayout();
-    //grid->setSpacing(SPACE);
-    grid->setContentsMargins(SPACE, SPACE, SPACE, SPACE);
-    //QPushButton *exit = new QPushButton();
+    grid->setSpacing(0);
+    //grid->setContentsMargins(SPACE, SPACE, SPACE, SPACE);
     text.append(new QTextEdit("Moves: " + QString::number(max_moves)));
     text.append(new QTextEdit("Score: " + QString::number(score)));
+    text.append(new QTextEdit("WinScore: " + QString::number(max_moves * 5 * 3)));
     for(size_t i = 0; i < text.count(); i++)
     {
         text[i]->setFixedSize(field->width()/2 - 30, 40);
@@ -37,10 +37,12 @@ void Level::createLevelWindow()
 
     grid->addWidget(text[0], 0, 0);
     grid->addWidget(text[1], 0, 1);
+    grid->addWidget(text[2], 0, 2);
     grid->setAlignment(text[0], Qt::AlignHCenter);
     grid->setAlignment(text[1], Qt::AlignHCenter);
+    grid->setAlignment(text[2], Qt::AlignHCenter);
    // grid->setMenuBar(score_text);
-    grid->addWidget(field, 1, 0, 1, 2);
+    grid->addWidget(field, 1, 0, 1, 3);
     this->setLayout(grid);
     //this->setFixedSize(field->width(), field->height() + score_text->height());
     this->setFixedSize(this->sizeHint());

@@ -28,6 +28,8 @@ public:
   void random_chip();
   bool is_blocked();
   bool is_in_combination();
+  bool is_in_quadr();
+  void set_quadr_flag(bool value);
   ~Cell();
 
   void paintEvent(QPaintEvent *event);
@@ -52,6 +54,7 @@ private:
 
   //QRectF boundingRect() const;
   bool in_combination;
+  bool in_quadr;
   //QPainter cell_painter;
 
 signals:

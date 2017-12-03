@@ -7,6 +7,7 @@ Cell::Cell(QWidget *parent) :
 {
     pointer_chip = new Chip();
     in_combination = false;
+    in_quadr = false;
     this->setFixedSize(CHIP_RADIUS + 2,CHIP_RADIUS + 2);
 }
 
@@ -32,6 +33,16 @@ bool Cell::is_in_combination()
     return in_combination;
 }
 
+bool Cell::is_in_quadr()
+{
+    return in_quadr;
+}
+
+void Cell::set_quadr_flag(bool value)
+{
+    in_quadr = value;
+}
+
 void Cell::paintEvent(QPaintEvent *event)
 {
 
@@ -40,6 +51,7 @@ void Cell::paintEvent(QPaintEvent *event)
         QPainter painter(this);
         update_chip_model(&painter);
 
+        painter.setRenderHint(QPainter::Antialiasing, true);
         painter.setPen(QPen(Qt::black, 0, Qt::SolidLine, Qt::FlatCap));
         painter.drawEllipse(1, 1, CHIP_RADIUS,CHIP_RADIUS);
 
