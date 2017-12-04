@@ -38,12 +38,11 @@ void Level::createLevelWindow()
     //grid->setContentsMargins(SPACE, SPACE, SPACE, SPACE);
     text.append(new QTextEdit("Moves: " + QString::number(max_moves)));
     text.append(new QTextEdit("Score: " + QString::number(score)));
-    text.append(new QTextEdit("WinScore:\n" + QString::number(max_moves * 5 * 3)));
-
+    text.append(new QTextEdit("WinScore: " + QString::number(max_moves * 5 * 3)));
     grid->addLayout(info,0,0,1,3);
     QSpacerItem *blank = new QSpacerItem(-5, 10);
     info->addItem(blank,0,0);
-
+    //text[0]->setPlainText("moves\nhhh");
     for(size_t i = 0; i < text.count(); i++)
     {
         text[i]->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -51,11 +50,10 @@ void Level::createLevelWindow()
         text[i]->setFixedSize(field->width()/2 - 30, 40);
         text[i]->setFrameStyle(0);
         text[i]->setDisabled(true);
-        //text[i]->setContentsMargins();
         text[i]->setStyleSheet("QTextEdit {background-color: #efefff; border-radius: 8px; border: 2px solid #dedede}");
         text[i]->setAlignment(Qt::AlignCenter);
+
         info->addWidget(text[i], 0, i + 2);
-        //grid->addWidget(text[i], 0, i);
         info->setAlignment(text[i], Qt::AlignRight);
     }
     grid->addWidget(field, 1, 0, 1, 2);

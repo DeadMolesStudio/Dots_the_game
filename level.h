@@ -11,6 +11,7 @@
 #include <QDebug>
 #include <QCoreApplication>
 #include <QSpacerItem>
+#include <QTextEdit>
 
 class Level : public QWidget
 {

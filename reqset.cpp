@@ -41,7 +41,7 @@ void ReqSet::create_req_Window()
     grid = new QGridLayout();
 
 
-    name = new QTextEdit("Require:");
+    name = new QTextEdit("Require");
     name->setContentsMargins(0,0,0,0);
 
     name->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
