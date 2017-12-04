@@ -10,6 +10,7 @@
 #include "reqset.h"
 #include <QDebug>
 #include <QCoreApplication>
+#include <QSpacerItem>
 
 class Level : public QWidget
 {
@@ -30,11 +31,13 @@ private:
   unsigned int score;
   int max_moves;
   int cur_moves;
+  bool reqs_done;
 
   QVector<Requirement> reqs;
 
   //графика
   QGridLayout *grid;
+  QGridLayout *info;
   QVector<QTextEdit *> text;
 
 private slots:

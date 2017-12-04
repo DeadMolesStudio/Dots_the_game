@@ -9,6 +9,7 @@
 #include <chip.h>
 #include "requirement.h"
 #include <QString>
+#include <QStyleOption>
 
 //struct req_element
 //{
@@ -31,7 +32,9 @@ private:
     QVector<Cell*> icons;
     QVector<QTextEdit*> numbers;
     QGridLayout *grid;
+    QTextEdit *name;
     void create_req_Window();
+    void paintEvent(QPaintEvent *event);
 public slots:
     void update_info_reqs_slot(QVector<Requirement> reqs);
 };

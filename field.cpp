@@ -101,6 +101,7 @@ Field::~Field()
 void Field::createWindow()
 {
     this->setFixedSize(cols * (CHIP_RADIUS + SPACE) + 30, rows * (CHIP_RADIUS + SPACE) + 30);    // Фиксируем размеры виджета(окна)
+
     QPalette Pal(palette());
     // устанавливаем цвет фона
     Pal.setColor(QPalette::Background, QColor(QRgb(0xe6e6fa)));
