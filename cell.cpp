@@ -1,6 +1,7 @@
 #include "cell.h"
 #include <QApplication>
 static const int CHIP_RADIUS = 25;
+static const int interval = 12;
 
 Cell::Cell(QWidget *parent) :
     QWidget(parent)
@@ -11,6 +12,7 @@ Cell::Cell(QWidget *parent) :
     in_combination = false;
     in_quadr = false;
     this->setFixedSize(CHIP_RADIUS + 2,CHIP_RADIUS + 2);
+    current_radius = CHIP_RADIUS;
 }
 
 Cell::Cell(QWidget *parent, Chip chip, bool blocked)
@@ -22,6 +24,7 @@ Cell::Cell(QWidget *parent, Chip chip, bool blocked)
     in_combination = false;
     in_quadr = false;
     this->setFixedSize(CHIP_RADIUS + 2,CHIP_RADIUS + 2);
+    current_radius = CHIP_RADIUS;
 }
 
 Chip* Cell::get_chip()
@@ -29,15 +32,33 @@ Chip* Cell::get_chip()
     return pointer_chip;
 }
 
-void Cell::random_chip()
+void Cell::animated_random_chip()
 {
-    int old_color = pointer_chip->color;
-    do
-    {
-    delete pointer_chip;
-    pointer_chip  = new Chip();
-    } while (pointer_chip->color == old_color);
+     get_small();
+     QTimer::singleShot(interval*14, this, &Cell::random_chip);
+     QTimer::singleShot(interval*14, this, &Cell::get_big);
+     return;
 }
+
+
+
+//new
+//O -> Y, B py
+//Y -> P, R //ok
+//B -> Y, P //ok
+//R -> O, B by
+//P -> O, R br
+
+//yy, oo, bb, rr, pp
+
+//Y = 0, O = 1, R = 2, B = 3, P = 4
+
+//0 -> 1, 2
+//1 -> 2, 3
+//2 -> 3, 4
+//3 -> 4, 0    3+1 = 4 3+2 = 5
+//4 -> 0, 1    4+1 = 5 4+2 = 6
+
 
 bool Cell::is_blocked()
 {
@@ -159,9 +180,9 @@ void Cell::update_chip_model(QPainter *painter)
 void Cell::drawTriangle(QPainter *painter)
 {
         QVector<QPoint> points;
-        points.append(QPoint(1 + CHIP_RADIUS/2, 1 + 2));
-        points.append(QPoint(CHIP_RADIUS, CHIP_RADIUS));
-        points.append(QPoint(1, CHIP_RADIUS));
+        points.append(QPoint(1 + CHIP_RADIUS/2, 1 + 2 + (CHIP_RADIUS - current_radius)/2));
+        points.append(QPoint(1 + (CHIP_RADIUS - current_radius)/2, CHIP_RADIUS - (CHIP_RADIUS - current_radius)/2));
+        points.append(QPoint(CHIP_RADIUS - (CHIP_RADIUS - current_radius)/2, CHIP_RADIUS - (CHIP_RADIUS - current_radius)/2));
         QPolygon triangle(points);
         painter->drawPolygon(points);
         points.clear();
@@ -172,7 +193,7 @@ void Cell::drawChip(QPainter *painter)
     switch (pointer_chip->shape)
     {
     case 0:
-        painter->drawEllipse(1, 1, CHIP_RADIUS,CHIP_RADIUS);
+        painter->drawEllipse(1 + (CHIP_RADIUS - current_radius)/2, 1 + (CHIP_RADIUS - current_radius)/2, current_radius,current_radius);
         break;
     case 1:
         drawTriangle(painter);
@@ -181,6 +202,67 @@ void Cell::drawChip(QPainter *painter)
         qDebug() << "shape error";
         break;
     }
+}
+
+void Cell::update_by_radius(int radius)
+{
+    current_radius = radius;
+    repaint();
+}
+
+void Cell::smaller()
+{
+    --current_radius;
+    repaint();
+}
+
+void Cell::bigger()
+{
+    ++current_radius;
+    repaint();
+}
+
+void Cell::set_small()
+{
+    current_radius = 5;
+    repaint();
+}
+
+void Cell::set_big()
+{
+    current_radius = CHIP_RADIUS;
+    repaint();
+}
+
+void Cell::get_small()
+{
+    QTimer *tmr = new QTimer();
+    connect(tmr, &QTimer::timeout, this, &Cell::smaller);
+    tmr->setInterval(interval);
+    tmr->start();
+    QTimer::singleShot(interval*14, tmr, &QTimer::stop);
+    QTimer::singleShot(interval*14, this, &Cell::set_small);
+
+}
+
+void Cell::get_big()
+{
+    QTimer *tmr = new QTimer();
+    connect(tmr, &QTimer::timeout, this, &Cell::bigger);
+    tmr->setInterval(interval);
+    tmr->start();
+    QTimer::singleShot(interval*14, tmr, &QTimer::stop);
+    QTimer::singleShot(interval*14, this, &Cell::set_big);
+}
+
+void Cell::random_chip()
+{
+    int old_color = pointer_chip->color;
+    do
+    {
+        delete pointer_chip;
+        pointer_chip  = new Chip();
+    } while (pointer_chip->color == old_color);
 }
 
 void Cell::mousePressEvent(QMouseEvent *event)

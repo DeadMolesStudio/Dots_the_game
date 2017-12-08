@@ -40,7 +40,6 @@ void ReqSet::create_req_Window()
     //this->setStyleSheet("this {color: #000; background-color: transparent; border: 2px solid #000}");
     grid = new QGridLayout();
 
-
     name = new QTextEdit("Require");
     name->setContentsMargins(0,0,0,0);
 
@@ -52,10 +51,8 @@ void ReqSet::create_req_Window()
     name->setDisabled(true);
     name->setStyleSheet("QTextEdit {background-color: transparent}");
     name->setFixedHeight(30);
-    //name->setAlignment(Qt::AlignTop);
-    //grid->addWidget(name, 0, 0, 1, 2);
+
     grid->setMenuBar(name);
-    //grid->itemAtPosition(0,0)->setGeometry(QRect(1,1,80,30));
 
     for (size_t i = 0; i < icons.count(); i++)
     {
@@ -68,8 +65,6 @@ void ReqSet::create_req_Window()
         numbers[i]->setDisabled(true);
         grid->setRowStretch(i + 1, 0);
         numbers[i]->setStyleSheet("QTextEdit {background-color: transparent;}");
-        //numbers[i]->setPalette(QBrush(Qt::NoBrush));
-        //numbers[i]->setAttribute( Qt::WA_TranslucentBackground, true );
 
         grid->addWidget(numbers[i], i, 0);
         grid->addWidget(icons[i], i, 1);

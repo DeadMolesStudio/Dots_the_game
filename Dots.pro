@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     field.cpp \
     level.cpp \
     requirement.cpp \
-    reqset.cpp
+    reqset.cpp \
+    bonuses.cpp
 
 
 
@@ -28,7 +29,8 @@ HEADERS  += cell.h \
     field.h \
     level.h \
     requirement.h \
-    reqset.h
+    reqset.h \
+    bonuses.h
 
 
 

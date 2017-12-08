@@ -6,18 +6,23 @@ const int SPACE = 5;
 Level::Level(QWidget *, int max_moves, size_t rows, size_t cols) :
      score(0), max_moves(max_moves), cur_moves(0)
 {
+    winscore = this->max_moves * 5 * 3;
     field = new Field(this, rows, cols);
     reqs_done = 0;
     reqs.append(Requirement(Chip(1, 3), 3)); //красные треугольники
     reqs.append(Requirement(Chip(0, 0), 5)); //синие круги
-//    reqs.append(Requirement(Chip(1, 2), 4)); //красные треугольники
-//    reqs.append(Requirement(Chip(0, 4), 4)); //синие круги
+    reqs.append(Requirement(Chip(1, 2), 4)); //красные треугольники
+    reqs.append(Requirement(Chip(0, 4), 4)); //синие круги
     reqset = new ReqSet(0, reqs);
+    bonuses = new Bonuses();
+    connect(field, &Field::quant_s, this, &Level::quants_SLOT);
+    connect(this, &Level::quants_SIGNAL, bonuses, &Bonuses::addQuant);
     connect(this, &Level::update_reqs_info, reqset, &ReqSet::update_info_reqs_slot);
     connect(field, &Field::plusScore, this, &Level::update_score_Slot);
     connect(field, &Field::check_reqs_for_cell, this, &Level::check_reqs_Slot);
-    createLevelWindow();
+    connect(field, &Field::not_quant, bonuses, &Bonuses::clear);
 
+    createLevelWindow();
 }
 
 void Level::createLevelWindow()
@@ -26,9 +31,12 @@ void Level::createLevelWindow()
     this->setWindowTitle(QString("Dots"));
     QPalette Pal(palette());
     // устанавливаем цвет фона
-    Pal.setColor(QPalette::Background, QColor(QRgb(0xe6e6fa)));
+    Pal.setColor(QPalette::Background, QColor(QRgb(0xe6e6fa)));//first
+
     this->setAutoFillBackground(true);
     this->setPalette(Pal);
+
+    bonuses->setStyleSheet("Bonuses{background-color: #efefff; border-radius: 8px; border: 2px solid #dedede}");
     reqset->setStyleSheet("ReqSet{background-color: #efefff; border-radius: 8px; border: 2px solid #dedede}");
 
     grid = new QGridLayout();
@@ -38,11 +46,9 @@ void Level::createLevelWindow()
     //grid->setContentsMargins(SPACE, SPACE, SPACE, SPACE);
     text.append(new QTextEdit("Moves: " + QString::number(max_moves)));
     text.append(new QTextEdit("Score: " + QString::number(score)));
-    text.append(new QTextEdit("WinScore: " + QString::number(max_moves * 5 * 3)));
-    grid->addLayout(info,0,0,1,3);
-    QSpacerItem *blank = new QSpacerItem(-5, 10);
-    info->addItem(blank,0,0);
-    //text[0]->setPlainText("moves\nhhh");
+    text.append(new QTextEdit("WinScore: " + QString::number(winscore)));
+    grid->addLayout(info,0,0,1,4);
+
     for(size_t i = 0; i < text.count(); i++)
     {
         text[i]->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -53,13 +59,19 @@ void Level::createLevelWindow()
         text[i]->setStyleSheet("QTextEdit {background-color: #efefff; border-radius: 8px; border: 2px solid #dedede}");
         text[i]->setAlignment(Qt::AlignCenter);
 
-        info->addWidget(text[i], 0, i + 2);
-        info->setAlignment(text[i], Qt::AlignRight);
+        info->addWidget(text[i], 0, i);
+        info->setAlignment(text[i], Qt::AlignCenter);
     }
-    grid->addWidget(field, 1, 0, 1, 2);
-    grid->addWidget(reqset,1, 2);
-    reqset->setFixedSize(field->width()/2 - 30, field->height() - 30);
+    info->setAlignment(text[0], Qt::AlignLeft);
+    info->setAlignment(text[2], Qt::AlignRight);
 
+    reqset->setFixedSize(field->width()/2 - 30, field->height() - 30);
+    bonuses->resize(field->width()/2 - 30, field->height() - 30);
+    bonuses->setFixedSize(field->width()/2 - 30, field->height() - 30);
+    grid->addWidget(bonuses, 1, 0, 1, 1);
+    grid->addWidget(field, 1, 1, 1, 2);
+    grid->addWidget(reqset,1, 3);
+    //qDebug() << field->rect();
     this->setLayout(grid);
     this->setFixedSize(this->sizeHint());
 }
@@ -73,7 +85,7 @@ void Level::update_score_Slot(unsigned int add_score)
     text[0]->setText("Moves: " + QString::number(max_moves - cur_moves));
     text[1]->setAlignment(Qt::AlignCenter);
     text[0]->setAlignment(Qt::AlignCenter);
-    if (score >= max_moves * 5 * 3 && reqs_done)
+    if (score >= winscore && reqs_done)
     {
         unsigned int bonus = (max_moves - cur_moves) * 5 * 3;
         QMessageBox::information(this, "ПОБЕДА", QString("Победа! Ваши очки: ") + QString::number(score) +
@@ -121,6 +133,12 @@ void Level::check_reqs_Slot(Chip test)
     {
         emit update_reqs_info(reqs);
     }
+}
+
+void Level::quants_SLOT(int color)
+{
+    qDebug() << "quants_SLOT";
+    emit quants_SIGNAL(color);
 }
 
 Level::~Level()

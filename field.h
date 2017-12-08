@@ -9,6 +9,8 @@
 #include <QGridLayout>
 #include <QRgb>
 #include <QDebug>
+#include <QParallelAnimationGroup>
+#include <QSequentialAnimationGroup>
 
 class Field : public QWidget
 {
@@ -16,6 +18,7 @@ class Field : public QWidget
 public:
   explicit Field(QWidget *parent = 0, size_t rows = 0, size_t cols = 0);
   Cell* get_cell(size_t row, size_t col);
+  bool cell_position(Cell *cell, size_t &row, size_t &col);
   bool check_cell(size_t row, size_t col);//проверяет наличие комбинаций с соседями
   void update_field();
   void random_field();
@@ -36,6 +39,7 @@ private:
   bool adjacency_check(Cell *added);
   void repaint_field();
   unsigned int quadr();
+  unsigned int quant();
 
   //графика
   void createWindow();
@@ -51,6 +55,9 @@ private slots:
 signals:
   void plusScore(unsigned int add_score);
   void check_reqs_for_cell(Chip test);
+  void quant_s(int color);
+  void not_quant();
+
 };
 
 

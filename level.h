@@ -12,6 +12,8 @@
 #include <QCoreApplication>
 #include <QSpacerItem>
 #include <QTextEdit>
+#include <QPropertyAnimation>
+#include "bonuses.h"
 
 class Level : public QWidget
 {
@@ -29,7 +31,9 @@ public:
 private:
   ReqSet *reqset;
   Field *field;
+  Bonuses *bonuses;
   unsigned int score;
+  unsigned int winscore;
   int max_moves;
   int cur_moves;
   bool reqs_done;
@@ -44,9 +48,11 @@ private:
 private slots:
   void update_score_Slot(unsigned int add_score);
   void check_reqs_Slot(Chip test);
+  void quants_SLOT(int color);
 
 signals:
   void update_reqs_info(QVector<Requirement> reqs);
+  void quants_SIGNAL(int color);
 
 };
 

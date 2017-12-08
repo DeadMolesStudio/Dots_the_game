@@ -26,13 +26,3 @@ Chip::Chip(int shape, int color) :
 {
     points = (1 + shape) * 5;
 }
-
-//Y, O, R, B, P
-
-//Y -> O, R
-//O -> B, P
-//B -> B, R
-//P -> O, Y
-//R -> Y, P
-
-//oo, pp, bb, rr, yy

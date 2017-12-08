@@ -16,6 +16,23 @@ Cell* Field::get_cell(size_t row, size_t col)
     return cell_matrix[row][col];
 }
 
+bool Field::cell_position(Cell *cell, size_t &row, size_t &col)
+{
+    for (size_t i = 0; i < rows; i++)
+    {
+        for (size_t j = 0; j < cols; j++)
+        {
+            if (cell_matrix[i][j] == cell)
+            {
+                row = i;
+                col = j;
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
 void Field::random_field()
 {
     for (size_t i = 0; i < rows; i++)
@@ -24,7 +41,7 @@ void Field::random_field()
         {
             if (!cell_matrix[i][j]->is_blocked())
             {
-                cell_matrix[i][j]->random_chip();
+                cell_matrix[i][j]->animated_random_chip();
             }
         }
     }
@@ -40,13 +57,14 @@ void Field::check_field()//проверяет наличие комбинаци�
             {
                if (check_cell(i, j))
                {
-                   repaint_field();
+                   //repaint_field();
                    return;
                }
             }
         }
         qDebug() << "Mother, I'm RANDOMED";
         random_field();
+        repaint_field();
     }
 }
 
@@ -105,6 +123,7 @@ void Field::createWindow()
     QPalette Pal(palette());
     // устанавливаем цвет фона
     Pal.setColor(QPalette::Background, QColor(QRgb(0xe6e6fa)));
+
     this->setAutoFillBackground(true);
     this->setPalette(Pal);
 
@@ -118,7 +137,7 @@ void Field::createWindow()
         cell_matrix[i] = new Cell*[cols];
         for (size_t j = 0; j < cols; j++)
         {
-            cell_matrix[i][j] = new Cell();
+            cell_matrix[i][j] = new Cell(this);
             connect(cell_matrix[i][j], &Cell::pressSignal,this, &Field::pressSlot);
             connect(cell_matrix[i][j], &Cell::releaseSignal,this, &Field::releaseSlot);
             connect(cell_matrix[i][j], &Cell::moveSignal,this, &Field::moveSlot);
@@ -133,11 +152,19 @@ void Field::createWindow()
 void Field::complete_combination()
 {
     unsigned int score = 0;
+    if (combination.count() >= 5)
+    {
+        emit plusScore(quant());
+        combination.clear();
+        check_field();
+        return;
+    }
+    emit not_quant();
     while(!combination.isEmpty())
     {
         score += combination.last()->get_chip()->points;
         emit check_reqs_for_cell(*(combination.last()->get_chip()));
-        combination.last()->random_chip();
+        combination.last()->animated_random_chip();
         combination.takeLast()->deactivate();
     }
     emit plusScore(score);
@@ -149,6 +176,7 @@ void Field::complete_combination()
 void Field::complete_quadr_combination()
 {
     unsigned int score = 0;
+    emit not_quant();
     score += quadr();
 //        TODO: вызывать ее в релизивенте вместо комплет в случае квадра
 //                сюда надо вкопипастить все из комплита с учетом рандома фишек без старого цвета
@@ -157,7 +185,7 @@ void Field::complete_quadr_combination()
     {
         score += combination.last()->get_chip()->points;
         emit check_reqs_for_cell(*(combination.last()->get_chip()));
-        combination.last()->random_chip();
+        combination.last()->animated_random_chip();
         combination.last()->set_quadr_flag(false);
         combination.takeLast()->deactivate();
     }
@@ -383,9 +411,40 @@ unsigned int Field::quadr()
                 local_score += cell_matrix[i][j]->get_chip()->points;
                 emit check_reqs_for_cell(*(cell_matrix[i][j]->get_chip()));
                 cell_matrix[i][j]->deactivate();
-                cell_matrix[i][j]->random_chip();
+                cell_matrix[i][j]->animated_random_chip();
             }
         }
     }
+    return local_score;
+}
+
+unsigned int Field::quant()
+{
+    qDebug() << "quant";
+    unsigned int local_score = 0;
+    emit quant_s(combination.last()->get_chip()->color);
+    //QSequentialAnimationGroup *group = new QSequentialAnimationGroup;
+    //QParallelAnimationGroup *group = new QParallelAnimationGroup;
+    while(!combination.isEmpty())
+    {
+        local_score += combination.last()->get_chip()->points;
+        emit check_reqs_for_cell(*(combination.last()->get_chip()));
+//        QPropertyAnimation *animation = new QPropertyAnimation(combination.last(), "size");
+//        qDebug() << combination.last()->size();
+//        animation->setDuration(2000);
+//        //animation->setStartValue(combination.last()->rect());
+//        //animation->setStartValue(combination.last()->rect());
+//        //animation->setEndValue(QRect(0, 0, combination.last()->rect().width(), combination.last()->rect().height()));
+//        animation->setEndValue(QSize(10, 10));
+//        animation->setEasingCurve(QEasingCurve::Linear);
+//        group->addAnimation(animation);
+        combination.last()->animated_random_chip();
+        combination.takeLast()->deactivate();
+
+    }
+    //group->addPause(300);
+    //group->start();
+
+    //group->deleteLater();
     return local_score;
 }
