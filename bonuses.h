@@ -32,6 +32,9 @@ private:
 public slots:
     void addQuant(int color);
     void clear();
+
+signals:
+    void choose_bonuses();
 };
 
 #endif // BONUSES_H

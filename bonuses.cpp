@@ -66,11 +66,12 @@ void Bonuses::addQuant(int color)
     animation->setEasingCurve(QEasingCurve::OutElastic);
     animation->start();
     current_quants++;
-    if (current_quants == 3)
+    if (current_quants == 1)
     {
         //выбор бонуса
         //this->setStyleSheet("Bonuses{background-color: #abcdef;border-radius: 8px; border: 2px solid #dedede}");
         clear();
+        emit choose_bonuses();
     }
 
 }
@@ -111,7 +112,7 @@ void Bonuses::clear()
         QSequentialAnimationGroup *group = new QSequentialAnimationGroup;
         for(size_t i = 0; i < current_quants; i++)
         {
-            QPropertyAnimation *animation = new QPropertyAnimation(blocks[current_quants], "geometry");
+            QPropertyAnimation *animation = new QPropertyAnimation(blocks[i], "geometry");
             animation->setDuration(1000);
 
             animation->setStartValue(QRect(5, this->rect().bottom() - 45 + 1, this->rect().width()-10, 40));

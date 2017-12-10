@@ -13,7 +13,6 @@
 #include <QVector>
 #include <QDebug>
 #include <QTimer>
-#include <QThread>
 #include <QPropertyAnimation>
 
 enum class Chip_colors {

@@ -8,7 +8,7 @@ Field::Field(QWidget *,size_t rows, size_t cols) :
     rows(rows), cols(cols)
 {
     createWindow();
-    setMouseTracking(false);
+    setMouseTracking(true);
 }
 
 Cell* Field::get_cell(size_t row, size_t col)
@@ -114,6 +114,25 @@ Field::~Field()
     delete [] cell_matrix;
     combination.clear();
     delete grid;
+}
+
+void Field::random_field_bonus()
+{
+    qDebug() << "random_field_bonus";
+    random_field();
+    check_field();
+}
+
+void Field::line_destroy_bonus()
+{
+    qDebug() << "line_destroy_bonus";
+
+}
+
+void Field::color_bonus()
+{
+    qDebug() << "color_bonus";
+
 }
 
 void Field::createWindow()
@@ -423,28 +442,13 @@ unsigned int Field::quant()
     qDebug() << "quant";
     unsigned int local_score = 0;
     emit quant_s(combination.last()->get_chip()->color);
-    //QSequentialAnimationGroup *group = new QSequentialAnimationGroup;
-    //QParallelAnimationGroup *group = new QParallelAnimationGroup;
     while(!combination.isEmpty())
     {
         local_score += combination.last()->get_chip()->points;
         emit check_reqs_for_cell(*(combination.last()->get_chip()));
-//        QPropertyAnimation *animation = new QPropertyAnimation(combination.last(), "size");
-//        qDebug() << combination.last()->size();
-//        animation->setDuration(2000);
-//        //animation->setStartValue(combination.last()->rect());
-//        //animation->setStartValue(combination.last()->rect());
-//        //animation->setEndValue(QRect(0, 0, combination.last()->rect().width(), combination.last()->rect().height()));
-//        animation->setEndValue(QSize(10, 10));
-//        animation->setEasingCurve(QEasingCurve::Linear);
-//        group->addAnimation(animation);
         combination.last()->animated_random_chip();
         combination.takeLast()->deactivate();
 
     }
-    //group->addPause(300);
-    //group->start();
-
-    //group->deleteLater();
     return local_score;
 }

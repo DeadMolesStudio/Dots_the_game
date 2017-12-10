@@ -19,7 +19,10 @@ SOURCES += main.cpp\
     level.cpp \
     requirement.cpp \
     reqset.cpp \
-    bonuses.cpp
+    bonuses.cpp \
+    selecter.cpp \
+    mainwindow.cpp \
+    menu.cpp
 
 
 
@@ -30,7 +33,10 @@ HEADERS  += cell.h \
     level.h \
     requirement.h \
     reqset.h \
-    bonuses.h
+    bonuses.h \
+    selecter.h \
+    mainwindow.h \
+    menu.h
 
 
 

@@ -6,6 +6,7 @@
 #include <QVector>
 #include <QWidget>
 #include <QMessageBox>
+#include <QMouseEvent>
 #include <QGridLayout>
 #include <QRgb>
 #include <QDebug>
@@ -20,13 +21,18 @@ public:
   Cell* get_cell(size_t row, size_t col);
   bool cell_position(Cell *cell, size_t &row, size_t &col);
   bool check_cell(size_t row, size_t col);//проверяет наличие комбинаций с соседями
-  void update_field();
   void random_field();
+  void update_field();
   void check_field();//проверяет наличие комбинаций на поле(шахматный порядок(чекнуть в случае с вырезами у краев))
   Cell* get_empty_cell(size_t temp_col, size_t& temp_row);
   Cell* get_not_empty_cell(size_t temp_col, size_t& temp_row);
   void add_to_combination(Cell* added);
   ~Field();
+
+public slots:
+  void random_field_bonus();
+  void line_destroy_bonus();
+  void color_bonus();
 
 private:
   //логика

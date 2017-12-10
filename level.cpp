@@ -8,6 +8,11 @@ Level::Level(QWidget *, int max_moves, size_t rows, size_t cols) :
 {
     winscore = this->max_moves * 5 * 3;
     field = new Field(this, rows, cols);
+    selecter = new Selecter(this);
+    selecter->raise();
+//    selecter->activateWindow();
+//    selecter->setEnabled(1);
+//    selecter->setHidden(0);
     reqs_done = 0;
     reqs.append(Requirement(Chip(1, 3), 3)); //красные треугольники
     reqs.append(Requirement(Chip(0, 0), 5)); //синие круги
@@ -21,6 +26,12 @@ Level::Level(QWidget *, int max_moves, size_t rows, size_t cols) :
     connect(field, &Field::plusScore, this, &Level::update_score_Slot);
     connect(field, &Field::check_reqs_for_cell, this, &Level::check_reqs_Slot);
     connect(field, &Field::not_quant, bonuses, &Bonuses::clear);
+    connect(bonuses, &Bonuses::choose_bonuses, this, &Level::show_selecter);
+    connect(selecter, &Selecter::selected, this, &Level::start_bonus);
+    connect(this, &Level::line_bonus_SIGNAL,field, &Field::line_destroy_bonus);
+    connect(this, &Level::random_bonus_SIGNAL,field, &Field::random_field_bonus);
+    connect(this, &Level::color_bonus_SIGNAL,field, &Field::color_bonus);
+
 
     createLevelWindow();
 }
@@ -48,6 +59,7 @@ void Level::createLevelWindow()
     text.append(new QTextEdit("Score: " + QString::number(score)));
     text.append(new QTextEdit("WinScore: " + QString::number(winscore)));
     grid->addLayout(info,0,0,1,4);
+//    grid->addWidget(selecter);
 
     for(size_t i = 0; i < text.count(); i++)
     {
@@ -141,6 +153,35 @@ void Level::quants_SLOT(int color)
     emit quants_SIGNAL(color);
 }
 
+void Level::show_selecter()
+{
+    selecter->show();
+    this->setEnabled(0);
+    selecter->setEnabled(1);
+    selecter->raise();
+}
+
+void Level::start_bonus(int bonus)
+{
+    switch(bonus)
+    {
+    case 0:
+        emit line_bonus_SIGNAL();
+        this->setEnabled(1);
+        break;
+    case 1:
+        emit random_bonus_SIGNAL();
+        this->setEnabled(1);
+        break;
+    case 2:
+        emit color_bonus_SIGNAL();
+        this->setEnabled(1);
+        break;
+    default:
+        qDebug() << "error in Level::start_bonus";
+    }
+}
+
 Level::~Level()
 {
     for (size_t i = 0; i < text.count(); i++)
@@ -151,4 +192,5 @@ Level::~Level()
     info->deleteLater();
     field->deleteLater();
     reqset->deleteLater();
+    selecter->deleteLater();
 }
