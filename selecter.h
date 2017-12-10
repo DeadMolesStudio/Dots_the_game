@@ -12,6 +12,8 @@
 #include <math.h>
 #include <QSequentialAnimationGroup>
 #include <QPropertyAnimation>
+#include <QMovie>
+#include <QLabel>
 
 class Selecter : public QWidget
 {
@@ -23,6 +25,7 @@ public:
 
 private:
     QVector<QPushButton*> buttons;
+    QVector<QLabel*> labels;
     QGridLayout *grid;
 
     void createSelecterWindow();

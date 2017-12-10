@@ -19,17 +19,13 @@ Bonuses::~Bonuses()
 
 void Bonuses::createBonusesWindow()
 {
-    name = new QTextEdit("Bonuses:", this);
+    name = new QPushButton("Bonuses", this);
     name->setContentsMargins(0,0,0,0);
-    name->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    name->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    name->setAlignment(Qt::AlignRight);
-    name->setAlignment(Qt::AlignCenter);
-    name->setFrameStyle(0);
     name->setDisabled(true);
-    name->setStyleSheet("QTextEdit {background-color: transparent}");
+    name->setStyleSheet("QPushButton {background-color: transparent; }");
     name->setFixedHeight(30);
-
+    name->setVisible(1);
+    name->setGeometry(15, -3, 60, 30);
 
     current_quants = 0;
     for (size_t i = 0; i < 3; i++)
@@ -66,7 +62,7 @@ void Bonuses::addQuant(int color)
     animation->setEasingCurve(QEasingCurve::OutElastic);
     animation->start();
     current_quants++;
-    if (current_quants == 1)
+    if (current_quants == 3)
     {
         //выбор бонуса
         //this->setStyleSheet("Bonuses{background-color: #abcdef;border-radius: 8px; border: 2px solid #dedede}");

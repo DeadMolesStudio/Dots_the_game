@@ -86,6 +86,24 @@ void ReqSet::update_info_reqs_slot(QVector<Requirement> reqs)
 
 }
 
+void ReqSet::add_req(Requirement added)
+{
+    numbers.append(new QTextEdit(QString::number(added.left())));
+    icons.append(new Cell(0, added.get_sample(), 0));
+    numbers.last()->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    numbers.last()->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    numbers.last()->setFixedSize(CHIP_RADIUS + 2, CHIP_RADIUS + 2);
+    numbers.last()->setAlignment(Qt::AlignRight);
+    numbers.last()->setAlignment(Qt::AlignCenter);
+    numbers.last()->setFrameStyle(0);
+    numbers.last()->setDisabled(true);
+    grid->setRowStretch(numbers.count(), 0);
+    numbers.last()->setStyleSheet("QTextEdit {background-color: transparent;}");
+
+    grid->addWidget(numbers.last(), numbers.count()-1, 0);
+    grid->addWidget(icons.last(), numbers.count()-1, 1);
+}
+
 void ReqSet::paintEvent(QPaintEvent *event)
 {
     QStyleOption opt;

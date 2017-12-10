@@ -51,17 +51,29 @@ void Field::check_field()//проверяет наличие комбинаци�
 {
     while (true)
     {
+//        for (size_t i = 0; i < rows; i++)
+//        {
+//            for (size_t j = (i % 2) + 1; j < cols-2; j+=2)
+//            {
+//               if (check_cell(i, j))
+//               {
+//                   //repaint_field();
+//                   return;
+//               }
+//            }
+//        }
         for (size_t i = 0; i < rows; i++)
         {
-            for (size_t j = (i % 2) + 1; j < cols-2; j+=2)
+            for (size_t j = 0; j < cols; j++)
             {
-               if (check_cell(i, j))
-               {
-                   //repaint_field();
-                   return;
-               }
-            }
+                if (check_cell(i, j))
+                {
+                    //repaint_field();
+                    return;
+                 }
+             }
         }
+
         qDebug() << "Mother, I'm RANDOMED";
         random_field();
         repaint_field();
@@ -85,22 +97,22 @@ bool Field::check_cell(size_t row, size_t col)
     //up
     if(row > 1)
     {
-        if (cell_matrix[row-1][col]->get_chip()->color == cell_matrix[row][col]->get_chip()->color) return 1;
+        if (cell_matrix[row-1][col]->get_chip()->color == cell_matrix[row][col]->get_chip()->color && !cell_matrix[row-1][col]->is_blocked()) return 1;
     }
     //down
     if(row < rows - 1)
     {
-        if (cell_matrix[row+1][col]->get_chip()->color == cell_matrix[row][col]->get_chip()->color) return 1;
+        if (cell_matrix[row+1][col]->get_chip()->color == cell_matrix[row][col]->get_chip()->color  && !cell_matrix[row+1][col]->is_blocked()) return 1;
     }
     //left
     if(col > 1)
     {
-        if (cell_matrix[row][col-1]->get_chip()->color == cell_matrix[row][col]->get_chip()->color) return 1;
+        if (cell_matrix[row][col-1]->get_chip()->color == cell_matrix[row][col]->get_chip()->color  && !cell_matrix[row][col - 1]->is_blocked()) return 1;
     }
     //right
     if(col < cols - 1)
     {
-        if (cell_matrix[row][col+1]->get_chip()->color == cell_matrix[row][col]->get_chip()->color) return 1;
+        if (cell_matrix[row][col+1]->get_chip()->color == cell_matrix[row][col]->get_chip()->color  && !cell_matrix[row][col + 1]->is_blocked()) return 1;
     }
     return 0;
 }
@@ -123,16 +135,58 @@ void Field::random_field_bonus()
     check_field();
 }
 
-void Field::line_destroy_bonus()
+void Field::line_destroy_bonus(size_t number)
 {
+    emit add_extra_move();
     qDebug() << "line_destroy_bonus";
-
+    for (size_t j = 0; j < cols; j++)
+    {
+        cell_matrix[number][j]->activate();
+        combination.append(cell_matrix[number][j]);
+    }
+    uint score = 0;
+    while(!combination.isEmpty())
+    {
+        score += combination.last()->get_chip()->points;
+        emit check_reqs_for_cell(*(combination.last()->get_chip()));
+        combination.last()->animated_random_chip();
+        combination.takeLast()->deactivate();
+    }
+    emit plusScore(score);
+    combination.clear();
+    //qDebug("COMPLETE_COMBINATION");
+    check_field();
 }
 
 void Field::color_bonus()
 {
+    emit add_extra_move();
     qDebug() << "color_bonus";
-
+    Cell *temp = new Cell();
+    for (size_t i = 0; i < rows; i++)
+    {
+        for (size_t j = 0; j < cols; j++)
+        {
+            if (cell_matrix[i][j]->get_chip()->color == temp->get_chip()->color)
+            {
+                combination.append(cell_matrix[i][j]);
+            }
+        }
+    }
+    uint score = 0;
+    for (size_t i = 0; i < combination.count(); i++)
+    {
+        score += combination[i]->get_chip()->points;
+        emit check_reqs_for_cell(*(combination.last()->get_chip()));
+        combination[i]->activate();
+        QTimer::singleShot(800, combination[i], &Cell::animated_random_chip);
+        QTimer::singleShot(780, combination[i],&Cell::deactivate);
+    }
+    emit plusScore(score);
+    combination.clear();
+    //qDebug("COMPLETE_COMBINATION");
+    check_field();
+    delete temp;
 }
 
 void Field::createWindow()
@@ -168,12 +222,79 @@ void Field::createWindow()
     this->setLayout(grid);
 }
 
+void Field::set_cell_blocked(size_t row, size_t col)
+{
+    cell_matrix[row][col]->block(true);
+}
+
+void Field::preset1()
+{
+    //I
+    qDebug() << "preset1";
+        set_cell_blocked(2,0);
+        set_cell_blocked(3,0);
+        set_cell_blocked(4,0);
+        set_cell_blocked(2,6);
+        set_cell_blocked(3,6);
+        set_cell_blocked(4,6);
+}
+
+void Field::preset2()
+{
+    //звездочка
+            set_cell_blocked(0,0);
+            set_cell_blocked(1,0);
+            set_cell_blocked(2,0);
+            set_cell_blocked(0,1);
+            set_cell_blocked(0,2);
+            set_cell_blocked(1,1);
+
+
+            set_cell_blocked(6,0);
+            set_cell_blocked(5,0);
+            set_cell_blocked(4,0);
+            set_cell_blocked(6,1);
+            set_cell_blocked(6,2);
+            set_cell_blocked(5,1);
+
+
+            set_cell_blocked(0,4);
+            set_cell_blocked(0,5);
+            set_cell_blocked(0,6);
+            set_cell_blocked(1,6);
+            set_cell_blocked(2,6);
+            set_cell_blocked(1,5);
+
+
+            set_cell_blocked(6,4);
+            set_cell_blocked(6,5);
+            set_cell_blocked(6,6);
+            set_cell_blocked(5,6);
+            set_cell_blocked(4,6);
+            set_cell_blocked(5,5);
+}
+
+void Field::preset3()
+{
+            ///дырка
+            set_cell_blocked(2,2);
+            set_cell_blocked(2,3);
+            set_cell_blocked(2,4);
+            set_cell_blocked(3,3);
+            set_cell_blocked(3,2);
+            set_cell_blocked(3,4);
+            set_cell_blocked(4,2);
+            set_cell_blocked(4,3);
+            set_cell_blocked(4,4);
+}
+
 void Field::complete_combination()
 {
     unsigned int score = 0;
     if (combination.count() >= 5)
     {
-        emit plusScore(quant());
+        uint temp = quant();
+        emit plusScore(temp);
         combination.clear();
         check_field();
         return;
@@ -216,6 +337,10 @@ void Field::complete_quadr_combination()
 
 bool Field::adjacency_check(Cell *added)
 {
+    if (added->is_blocked())
+    {
+        return false;
+    }
     size_t i = 0;
     size_t j = 0;
     bool found = 0;

@@ -22,7 +22,9 @@ SOURCES += main.cpp\
     bonuses.cpp \
     selecter.cpp \
     mainwindow.cpp \
-    menu.cpp
+    menu.cpp \
+    line_selecter.cpp \
+    level_selecter.cpp
 
 
 
@@ -36,10 +38,15 @@ HEADERS  += cell.h \
     bonuses.h \
     selecter.h \
     mainwindow.h \
-    menu.h
+    menu.h \
+    line_selecter.h \
+    level_selecter.h
 
 
 
 
 FORMS    += field.ui
+
+RESOURCES += \
+    my_res.qrc
 

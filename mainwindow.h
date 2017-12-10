@@ -5,6 +5,8 @@
 #include "level.h"
 #include <QStackedWidget>
 #include <menu.h>
+#include <level_selecter.h>
+#include <QIcon>
 
 class MainWindow : public QMainWindow
 {
@@ -15,14 +17,21 @@ private:
     QStackedWidget *stack;
     Level *level;
     Menu *menu;
+    Level_selecter *level_selecter;
     QVector<QPushButton*> buttons;
-
     void createMainWindow();
 
 private slots:
     void play();
     void quit();
     void choose_level();
+    void choose_bonus(bool show);
+    void show_menu();
+    void help();
+    void new_level(uint number);
+    void clear_level();
+signals:
+    void level_activate(uint number);
 };
 
 #endif // MAINWINDOW_H

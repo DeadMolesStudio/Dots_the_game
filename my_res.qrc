@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>random.gif</file>
+        <file>color.gif</file>
+        <file>line.gif</file>
+        <file>logo.png</file>
+        <file>icon.png</file>
+    </qresource>
+</RCC>

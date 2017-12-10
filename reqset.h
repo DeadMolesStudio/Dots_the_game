@@ -37,6 +37,7 @@ private:
     void paintEvent(QPaintEvent *event);
 public slots:
     void update_info_reqs_slot(QVector<Requirement> reqs);
+    void add_req(Requirement added);
 };
 
 //req_element::req_element(Chip chip, size_t left)

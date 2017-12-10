@@ -31,8 +31,13 @@ public:
 
 public slots:
   void random_field_bonus();
-  void line_destroy_bonus();
+  void line_destroy_bonus(size_t number);
   void color_bonus();
+  void set_cell_blocked(size_t row, size_t col);
+
+  void preset1();
+  void preset2();
+  void preset3();
 
 private:
   //логика
@@ -63,7 +68,7 @@ signals:
   void check_reqs_for_cell(Chip test);
   void quant_s(int color);
   void not_quant();
-
+  void add_extra_move();
 };
 
 

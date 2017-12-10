@@ -14,7 +14,9 @@
 #include <QTextEdit>
 #include <QPropertyAnimation>
 #include "bonuses.h"
+#include "line_selecter.h"
 #include "selecter.h"
+#include <QPushButton>
 
 class Level : public QWidget
 {
@@ -22,9 +24,7 @@ class Level : public QWidget
 public:
   Level(QWidget *parent = 0, int max_moves = 10, size_t rows = 6, size_t cols = 6);
   Selecter *selecter;
-  //TODO:pause  ?
-  //TODO:start  ?
-  //TODO:stop ?
+  Line_selecter *line_selecter;
   ~Level();
 
   //графика
@@ -46,6 +46,7 @@ private:
   QGridLayout *grid;
   QGridLayout *info;
   QVector<QTextEdit *> text;
+  QPushButton *menu;
 
 private slots:
   void update_score_Slot(unsigned int add_score);
@@ -53,6 +54,9 @@ private slots:
   void quants_SLOT(int color);
   void show_selecter();
   void start_bonus(int bonus);
+  void hide_line_selecter(size_t number);
+  void to_menu();
+
 
 signals:
   void update_reqs_info(QVector<Requirement> reqs);
@@ -61,6 +65,25 @@ signals:
   void line_bonus_SIGNAL();
   void random_bonus_SIGNAL();
   void color_bonus_SIGNAL();
+
+  void show_selecter_SIGNAL(bool need_to_show);
+  void choosed_line_SIGNAL(size_t number);
+  void add_req_SIGNAL(Requirement added);
+
+  void enable_preset1();
+  void enable_preset2();
+  void enable_preset3();
+
+  void to_menu_SIGNAL();
+  void clear_me();
+
+public slots:
+  void add_req(int shape, int color, size_t demand);
+  void level1();
+  void level2();
+  void level3();
+  void choosed_level(uint number);
+  void add_move();
 
 };
 

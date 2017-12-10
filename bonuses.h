@@ -21,7 +21,7 @@ public:
     ~Bonuses();
 private:
     QVector<QTextEdit*> blocks;
-    QTextEdit *name;
+    QPushButton *name;
     QGridLayout *grid;
     size_t current_quants;
 

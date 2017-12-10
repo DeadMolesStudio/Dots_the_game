@@ -36,11 +36,9 @@ void Cell::animated_random_chip()
 {
      get_small();
      QTimer::singleShot(interval*14, this, &Cell::random_chip);
-     QTimer::singleShot(interval*14, this, &Cell::get_big);
+     QTimer::singleShot(interval*14, this, &Cell::get_big);//,skj 14
      return;
 }
-
-
 
 //new
 //O -> Y, B py
@@ -110,6 +108,7 @@ Cell::~Cell()
 void Cell::activate()
 {
     //qDebug("activate");
+    if (blocked) return;
     in_combination = true;
     update();
 }
@@ -117,6 +116,7 @@ void Cell::activate()
 void Cell::deactivate()
 {
     //qDebug("deactivate");
+    if (blocked) return;
     in_combination = false;
     update();
 }
@@ -124,24 +124,14 @@ void Cell::deactivate()
 void Cell::activate_graphics(QPainter *painter)
 {
     //qDebug("activate_graphics");
+    if (blocked) return;
     painter->setPen(QPen(Qt::white, 3, Qt::SolidLine, Qt::FlatCap));
     drawChip(painter);
 }
 
 void Cell::deactivate_graphics(QPainter *painter)
 {
-    //qDebug("deactivate_graphics");
-//    if (pointer_chip->color == 0)
-//    {
-//        QVector<QPoint> points;
-//        points.append(QPoint(1 + CHIP_RADIUS/2, 1 + 2));
-//        points.append(QPoint(CHIP_RADIUS, CHIP_RADIUS));
-//        points.append(QPoint(1, CHIP_RADIUS));
-//        QPolygon triangle(points);
-//        painter->setBrush(QBrush(QColor(QRgb(Chip_colors::Dark_blue)), Qt::SolidPattern));
-//        painter->drawPolygon(points);
-//        return;
-//    }
+    if (blocked) return;
     painter->setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::FlatCap));
     drawChip(painter);
 }
@@ -149,6 +139,7 @@ void Cell::deactivate_graphics(QPainter *painter)
 void Cell::update_chip_model(QPainter *painter)
 {
     //qDebug("update_chip_model");
+    if (blocked) return;
     switch(pointer_chip->color)
     {
     case 0:
@@ -190,6 +181,7 @@ void Cell::drawTriangle(QPainter *painter)
 
 void Cell::drawChip(QPainter *painter)
 {
+    if (blocked) return;
     switch (pointer_chip->shape)
     {
     case 0:
@@ -206,36 +198,42 @@ void Cell::drawChip(QPainter *painter)
 
 void Cell::update_by_radius(int radius)
 {
+    if (blocked) return;
     current_radius = radius;
     repaint();
 }
 
 void Cell::smaller()
 {
+    if (blocked) return;
     --current_radius;
     repaint();
 }
 
 void Cell::bigger()
 {
+    if (blocked) return;
     ++current_radius;
     repaint();
 }
 
 void Cell::set_small()
 {
+    if (blocked) return;
     current_radius = 5;
     repaint();
 }
 
 void Cell::set_big()
 {
+    if (blocked) return;
     current_radius = CHIP_RADIUS;
     repaint();
 }
 
 void Cell::get_small()
 {
+    if (blocked) return;
     QTimer *tmr = new QTimer();
     connect(tmr, &QTimer::timeout, this, &Cell::smaller);
     tmr->setInterval(interval);
@@ -247,6 +245,7 @@ void Cell::get_small()
 
 void Cell::get_big()
 {
+    if (blocked) return;
     QTimer *tmr = new QTimer();
     connect(tmr, &QTimer::timeout, this, &Cell::bigger);
     tmr->setInterval(interval);
@@ -257,12 +256,19 @@ void Cell::get_big()
 
 void Cell::random_chip()
 {
+    if (blocked) return;
     int old_color = pointer_chip->color;
     do
     {
         delete pointer_chip;
         pointer_chip  = new Chip();
     } while (pointer_chip->color == old_color);
+}
+
+void Cell::block(bool blocked)
+{
+    this->blocked = blocked;
+    this->repaint();
 }
 
 void Cell::mousePressEvent(QMouseEvent *event)
@@ -301,6 +307,10 @@ void Cell::mouseMoveEvent(QMouseEvent *event)
 {
     //qDebug("moveEvent");
     QPoint temp = mapToGlobal(event->pos());
+    if (blocked)
+    {
+        temp = QPoint(100000, 100000);
+    }
     emit moveSignal(temp);
 }
 

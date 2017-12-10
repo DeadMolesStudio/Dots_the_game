@@ -75,6 +75,7 @@ signals:
   void leaveSignal();
   void releaseSignal();
   void moveSignal(QPoint mouse_pos);
+
 private slots:
   //void drawTriangle_by_size(QPainter *painter, int size);
   void update_by_radius(int radius);
@@ -86,6 +87,8 @@ private slots:
   void get_big();
   void random_chip();
 
+public slots:
+  void block(bool blocked);
 
 };
 
