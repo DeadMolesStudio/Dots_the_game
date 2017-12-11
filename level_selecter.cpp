@@ -15,7 +15,6 @@ Level_selecter::Level_selecter(QWidget *, size_t count)
 
     connect(back, &QPushButton::clicked, this, &Level_selecter::to_menu);
     grid = new QGridLayout();
-    QImage *image = new QImage();
     //grid->addWidget(image, 0, 1);
     for (size_t i = 0; i < count; i++)
     {

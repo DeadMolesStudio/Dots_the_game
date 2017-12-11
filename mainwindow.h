@@ -7,6 +7,7 @@
 #include <menu.h>
 #include <level_selecter.h>
 #include <QIcon>
+#include "help.h"
 
 class MainWindow : public QMainWindow
 {
@@ -18,6 +19,7 @@ private:
     Level *level;
     Menu *menu;
     Level_selecter *level_selecter;
+    Help *help_window;
     QVector<QPushButton*> buttons;
     void createMainWindow();
 

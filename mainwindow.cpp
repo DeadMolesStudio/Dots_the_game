@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *)
     level = new Level(0, 15, 7, 7);
     menu = new Menu();
     level_selecter = new Level_selecter(0, 4);
-
+    help_window = new Help();
     createMainWindow();
 }
 
@@ -21,13 +21,15 @@ void MainWindow::createMainWindow()
     stack->addWidget(level);
     stack->addWidget(level->selecter);
     stack->addWidget(level_selecter);
-    qDebug() << "wtf";
 
-    qDebug() << "wtf";
     stack->setCurrentIndex(0);
     stack->setFixedSize(level->sizeHint());
     menu->setFixedSize(stack->sizeHint());
     level_selecter->setFixedSize(stack->sizeHint());
+    help_window->setFixedWidth(stack->sizeHint().width());
+    help_window->setFixedHeight(stack->sizeHint().height() * 1.5);
+
+    stack->addWidget(help_window);
 
     stack->show();
     connect(menu, &Menu::quit_SIGNAL, this, &MainWindow::quit);
@@ -44,6 +46,8 @@ void MainWindow::createMainWindow()
     connect(level_selecter, &Level_selecter::selected_level, this, &MainWindow::new_level);
     connect(this, &MainWindow::level_activate, level, &Level::choosed_level);
     connect(level, &Level::clear_me, this, &MainWindow::clear_level);
+
+    connect(help_window, &Help::to_menu, this, &MainWindow::show_menu);
 
 
 }
@@ -68,6 +72,8 @@ void MainWindow::choose_level()
 void MainWindow::help()
 {
     qDebug() << "HELP";
+    stack->setFixedSize(stack->sizeHint());
+    stack->setCurrentIndex(stack->indexOf(help_window));
 }
 
 void MainWindow::new_level(uint number)
@@ -115,4 +121,5 @@ void MainWindow::choose_bonus(bool show)
 void MainWindow::show_menu()
 {
     stack->setCurrentWidget(menu);
+    stack->setFixedSize(level->sizeHint());
 }

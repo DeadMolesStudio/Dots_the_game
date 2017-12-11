@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     mainwindow.cpp \
     menu.cpp \
     line_selecter.cpp \
-    level_selecter.cpp
+    level_selecter.cpp \
+    help.cpp
 
 
 
@@ -40,7 +41,8 @@ HEADERS  += cell.h \
     mainwindow.h \
     menu.h \
     line_selecter.h \
-    level_selecter.h
+    level_selecter.h \
+    help.h
 
 
 
