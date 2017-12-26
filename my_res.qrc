@@ -5,5 +5,8 @@
         <file>line.gif</file>
         <file>logo.png</file>
         <file>icon.png</file>
+        <file>blocks.gif</file>
+        <file>pole.gif</file>
+        <file>reqs.gif</file>
     </qresource>
 </RCC>
