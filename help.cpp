@@ -27,18 +27,22 @@ Help::Help(QWidget *)
     text1 += "Правила нашей игры действительно просты. Соединяй соседние точки, набирай очки, выполняй задания!\n";
     text1 += "Ты можешь объединять в одну длинную линию любой формы сколько угодно фишек одного цвета.\n";
     text1 += "Можно объединять треугольники с кружочками, если они одного цвета! \nКруги стоят 5 очков, а тругольники целых 10!!\n";
-    text.append(new QPlainTextEdit(text1));
-    QString text2 = "В этом тебе помогут бонусы! В твоем распоряжении квадры! Собери четыре фишки одного цвета рядом\n";
-    text2 += "Зацикли квадратик, наведя снова на первую фишку... ВУАЛЯ! Уничтожились все фишки этого цвета на поле!!!";
-    QString text3 = "В этом тебе помогут бонусы! В твоем распоряжении квадры! Собери четыре фишки одного цвета рядом\n";
+    text1 += "В этом тебе помогут бонусы! В твоем распоряжении квадры! Собери четыре фишки одного цвета рядом\n";
+    text1 += "Зацикли квадратик, наведя снова на первую фишку... ВУАЛЯ! Уничтожились все фишки этого цвета на поле!!!";
+    QString text3 = "Еще у тебя есть возможность получить один из трех супер-бонусов\n";
+    text3 += "Собери три раза по пять или более фишек и выбери бонус!\n";
+    text3 +="Первый собирает все фишки с выбранной линиии, второй регенерирует новое поле\n";
+    text3 += "третий - собирает все фишки одного случайно выбранного цвета!";
 
     text.append(new QPlainTextEdit(text1));
+    text.append(new QPlainTextEdit(text3));
+
     grid->addWidget(text[0], 1, 0, 1, 3);
-    grid->addWidget(text[0], 3, 0, 1, 3);
+    grid->addWidget(text[1], 3, 0, 1, 3);
     for (size_t i = 0; i < 3; i++)
     {
         labels.append(new QLabel);
-        grid->addWidget(labels[i], 2, i);
+        grid->addWidget(labels[i], 4, i);
         grid->setAlignment(labels[i], Qt::AlignHCenter);
     }
 
@@ -58,7 +62,28 @@ Help::Help(QWidget *)
     labels[0]->movie()->start();
     labels[1]->movie()->start();
     labels[2]->movie()->start();
+    QGridLayout *temp_layout = new QGridLayout();
+    temp_layout->setContentsMargins(50, 0, 50, 0);
+    for (size_t i = 0; i < 2; i++)
+    {
+        labels.append(new QLabel);
+        temp_layout->addWidget(labels[i+3], 0, i);
+//        temp_layout->setAlignment(labels[i+3], Qt::AlignHCenter);
+//        temp_layout->setAlignment(labels[i+3], Qt::AlignTop);
+//        grid->addWidget(labels[i+3], 2, i);
+//        grid->setAlignment(labels[i+3], Qt::AlignRight);
+//        grid->setAlignment(labels[i+3], Qt::AlignTop);
+//        labels[i+3]->setFixedHeight(100);
+//        labels[i+3]->setScaledContents(true);
 
+    }
+    grid->addLayout(temp_layout, 2, 0, 1, 3);
+    //grid->setAlignment()
+    labels[3]->setMovie(new QMovie(":/images/pole.gif"));
+    labels[4]->setMovie(new QMovie(":/images/reqs.gif"));
+
+    labels[3]->movie()->start();
+    labels[4]->movie()->start();
 
     grid->addWidget(back, 5, 0, 1, 3);
     grid->setAlignment(back, Qt::AlignHCenter);

@@ -21,6 +21,7 @@ private:
     Level_selecter *level_selecter;
     Help *help_window;
     QVector<QPushButton*> buttons;
+    QSize *mysize;
     void createMainWindow();
 
 private slots:
